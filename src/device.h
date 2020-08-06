@@ -11,11 +11,15 @@
 #include "sam.h"
 
 
-#define LED0_PORT 0
-#define LED1_PORT 0
+#define LED_PORT 0
+
+#ifdef K_SAMD21_
 #define LED0_PIN 6
 #define LED1_PIN 7
-
+#else
+#define LED0_PIN 4
+#define LED1_PIN 5
+#endif
 
 #define DEBOUNCE_DELAY 100
 

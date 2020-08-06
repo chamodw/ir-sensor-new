@@ -21,7 +21,7 @@ static volatile uint8_t rs;
 
 static volatile I2CM_STATUS i2c_status;
 
-#ifdef _SAMD21_
+#ifdef K_SAMD21_
 #define SERCOMX SERCOM3
 #else
 #define SERCOMX SERCOM0
@@ -43,7 +43,7 @@ void i2c_init()
 	}
 	
 
-#ifdef _SAMD21_
+#ifdef K_SAMD21_
 	PM->APBCMASK.bit.SERCOM3_ = 1;		//Enable APB Clock for SERCOM3
 	
 	//Set PINMUX to connect SERCOM to the I2C Pins
@@ -92,7 +92,7 @@ void i2c_init()
 	SERCOMX->I2CM.INTENSET.bit.SB  = 1;
 	SERCOMX->I2CM.INTENSET.bit.ERROR= 1;
 	
-#ifdef _SAMD21_
+#ifdef K_SAMD21_
 	NVIC_EnableIRQ(SERCOM3_IRQn);
 	NVIC_SetPriority(SERCOM3_IRQn, 1);
 #else
@@ -218,7 +218,7 @@ void i2c_cmd(uint8_t ack, uint8_t cmd)
 }
 
 
-#ifdef _SAMD21_
+#ifdef K_SAMD21_
 void SERCOM3_Handler()
 #else
 void SERCOM0_Handler()

@@ -26,7 +26,7 @@ uint8_t cdt_init()
 {
 	
 	
-	#ifdef _SAMD21_
+#ifdef K_SAMD21_
 		//Initialize digital pins 
 	PORT->Group[0].DIRSET.reg = (1 << PIN_RANGE_1) |
 							(1 << PIN_RANGE_2) |
@@ -208,7 +208,7 @@ int16_t cdt_readAuto(int16_t* value, int16_t* range, int16_t* debug_buffer)
 		cdt_setRangeResistance(i);
 		
 		t = clock_getTicks();
-		while((clock_getTicks()-t) < 50);
+		while((clock_getTicks()-t) < 10);
 		
 		adc_values[i-1] = cdt_readADC();
 		

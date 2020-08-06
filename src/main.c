@@ -26,7 +26,6 @@ int main(void)
 	i2c_init();
 
 	
-	
 	usb_init();
 	usb_attach();
 	

@@ -12,23 +12,23 @@ void dev_led(uint8_t led, uint8_t status)
 {
 	if(led == 0)
 		if (status)
-			PORT->Group[LED0_PORT].OUTSET.reg = 1 <<LED0_PIN;
+			PORT->Group[LED_PORT].OUTSET.reg = 1 <<LED0_PIN;
 		else
-			PORT->Group[LED0_PORT].OUTCLR.reg = 1 <<LED0_PIN;
+			PORT->Group[LED_PORT].OUTCLR.reg = 1 <<LED0_PIN;
 		
 	else if (led == 1)
 		if (status)
-			PORT->Group[LED1_PORT].OUTSET.reg = 1 <<LED1_PIN;
+			PORT->Group[LED_PORT].OUTSET.reg = 1 <<LED1_PIN;
 		else
-			PORT->Group[LED1_PORT].OUTCLR.reg = 1 <<LED1_PIN;
+			PORT->Group[LED_PORT].OUTCLR.reg = 1 <<LED1_PIN;
 }
 
 void dev_init()
 {
 	
-	//Inidicator LEDs
-	PORT->Group[0].DIRSET.reg = 1 <<7 | (1 << 6);
-	
+	//Indicator LEDs
+	PORT->Group[LED_PORT].DIRSET.reg = (1 << LED0_PIN) | (1 << LED1_PIN);
+
 	//Configure PA08 for push button
 /*	PORT->Group[0].DIRCLR.reg =  1 << 8;  //Configure as input
 	PORT->Group[0].PINCFG[8].bit.INEN = 1;	  //Enable input
