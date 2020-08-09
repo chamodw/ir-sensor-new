@@ -122,6 +122,6 @@ int8_t sensirion_i2c_write(uint8_t address, const uint8_t *data,
 void sensirion_sleep_usec(uint32_t useconds) {
     // IMPLEMENT
 	uint32_t t = clock_getTicks();
-	while((clock_getTicks()-t) < useconds/500);
+	while((clock_getTicks()-t) < useconds/1000);
 	
 }

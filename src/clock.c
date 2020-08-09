@@ -153,7 +153,7 @@ void clock_init()
 		.bit.CLKEN = 1,
 		.bit.GEN = 4, //Use GCLK4 
 		
-#ifdef _SAMD21_
+#ifdef K_SAMD21_
 		.bit.ID = GCLK_CLKCTRL_ID_SERCOM3_CORE,
 #else
 		.bit.ID = GCLK_CLKCTRL_ID_SERCOM0_CORE,

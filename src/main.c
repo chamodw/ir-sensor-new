@@ -44,7 +44,7 @@ int main(void)
 	while (1)
 	{
 		uint32_t t = clock_getTicks();
-		while( clock_getTicks() - t < 100);
+		while( clock_getTicks() - t < 10);
 		
 		uint16_t count = sensor_read(packet.data);
 		packet.len = count;

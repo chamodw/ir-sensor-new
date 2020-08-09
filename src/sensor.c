@@ -108,7 +108,7 @@ uint16_t sensor_read(int16_t* dest)
 	return 0;
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_COLOUR
 	
-	int8_t e = veml_singleShot(2, 3, (uint16_t*) dest);
+	int8_t e = veml_singleShot(2, 2, (uint16_t*) dest);
 	if (e == K_SENSOR_OK)
 		return 4;
 	else
