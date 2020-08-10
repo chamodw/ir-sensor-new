@@ -38,6 +38,10 @@
 extern "C" {
 #endif
 
+
+#define USE_SENSIRION_CLOCK_STRETCHING (0)
+
+
 #define STATUS_OK 0
 #define STATUS_FAIL (-1)
 

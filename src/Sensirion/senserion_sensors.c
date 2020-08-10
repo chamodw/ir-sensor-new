@@ -100,10 +100,9 @@ int8_t tvoc_measure(uint16_t* tvoc_ppb, uint16_t* co2_eq_ppm)
 	
 	
 
-	int32_t temperature, humidity;
 
 	static uint32_t time_stamp = 0; 
-	static uint32_t i = 0; 
+
 //	int8_t ret = shtc1_measure_blocking_read(&temperature, &humidity);
 
 	while((clock_getTicks()-time_stamp) < 1000); //wait 2 seconds for the next reading

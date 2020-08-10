@@ -32,6 +32,7 @@
 #include "sensirion_arch_config.h"
 #include "sensirion_i2c.h"
 #include "sensirion_common.h"
+#include "../clock.h"
 
 #include "../sercom_i2c.h"
 

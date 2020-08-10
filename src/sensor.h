@@ -91,7 +91,7 @@ const char* sensor_name();
 
 
 
-#define KIW_SENSOR_TYPE SENSOR_TYPE_HUMIDITY
+#define KIW_SENSOR_TYPE SENSOR_TYPE_COLOUR
 
 
 #endif /* SENSOR_H_ */

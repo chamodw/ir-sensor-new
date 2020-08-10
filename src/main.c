@@ -11,8 +11,9 @@
 #include "sercom_i2c.h"
 #include <string.h>
 #include "sensor.h"
-
-
+#include "device.h"
+#include "USB/usb_lib.h"
+#include "USB/usbserial.h"
 
 
 int main(void)
@@ -50,7 +51,7 @@ int main(void)
 		packet.len = count;
 		packet.seq ++;
 
-		usbserial_tx(&packet, sizeof(packet));
+		usbserial_tx((uint8_t*)&packet, sizeof(packet));
 	}
 	
 

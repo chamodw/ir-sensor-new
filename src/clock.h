@@ -12,6 +12,6 @@
 #include "sam.h"
 
 void clock_init();
-uint32_t get_ticks();
+uint32_t clock_getTicks();
 
 #endif /* INCFILE1_H_ */

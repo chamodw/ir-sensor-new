@@ -6,6 +6,7 @@
  */ 
 
 #include "device.h"
+#include "clock.h"
 #include "sercom_i2c.h"
 
 static volatile uint8_t buffer_out[32];
@@ -49,8 +50,8 @@ void i2c_init()
 	//Set PINMUX to connect SERCOM to the I2C Pins
 	PORT->Group[0].PINCFG[22].bit.PMUXEN = 1;
 	PORT->Group[0].PINCFG[23].bit.PMUXEN = 1;
-	PORT->Group[0].PMUX[11].bit.PMUXE = PINMUX_PA22C_SERCOM3_PAD0;
-	PORT->Group[0].PMUX[11].bit.PMUXO = PINMUX_PA23C_SERCOM3_PAD1;
+	PORT->Group[0].PINCFG[11].reg = PORT_PMUX_PMUXE_C | PORT_PMUX_PMUXO_C;
+	
 	
 	
 #else
@@ -112,7 +113,7 @@ uint8_t i2c_getStatus()
 	return (uint8_t)i2c_status;
 }
 
-void i2c_write(uint8_t addr,  uint8_t* data, uint8_t n)
+void i2c_write(uint8_t addr,  const uint8_t* data, uint8_t n)
 {
 
 

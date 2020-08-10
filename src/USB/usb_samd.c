@@ -68,8 +68,9 @@ void usb_init(){
 		//Configure USB Pins
 	PORT->Group[0].PINCFG[24].bit.PMUXEN = 1;
 	PORT->Group[0].PINCFG[25].bit.PMUXEN = 1;
-	PORT->Group[0].PMUX[12].bit.PMUXE = PINMUX_PA24G_USB_DM;
-	PORT->Group[0].PMUX[12].bit.PMUXO = PINMUX_PA25G_USB_DP;
+	PORT->Group[0].PMUX[12].reg =PORT_PMUX_PMUXE_G | PORT_PMUX_PMUXO_G;
+	
+	
 		
 	
 

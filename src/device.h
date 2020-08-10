@@ -11,6 +11,17 @@
 #include "sam.h"
 
 
+
+//Set LED Status
+void dev_led(uint8_t led, uint8_t status);
+
+
+//Initialize LED pins 
+void dev_init(void);
+
+
+
+
 #define LED_PORT 0
 
 #ifdef K_SAMD21_
@@ -21,12 +32,7 @@
 #define LED1_PIN 5
 #endif
 
-#define DEBOUNCE_DELAY 100
 
 
-void dev_led(uint8_t led, uint8_t status);
-
-
-uint32_t clock_getTicks();
 
 #endif /* INCFILE1_H_ */

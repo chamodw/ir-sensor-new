@@ -9,7 +9,7 @@
 #include "sensor.h"
 #include "Sensirion/sensirion_sensors.h"
 #include "sam.h"
-
+#include "Color/color.h"
 
 
 Kiw_DataPacket* g_packet;

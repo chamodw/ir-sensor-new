@@ -11,16 +11,20 @@
 void dev_led(uint8_t led, uint8_t status)
 {
 	if(led == 0)
+	{
 		if (status)
 			PORT->Group[LED_PORT].OUTSET.reg = 1 <<LED0_PIN;
 		else
 			PORT->Group[LED_PORT].OUTCLR.reg = 1 <<LED0_PIN;
 		
+	}
 	else if (led == 1)
+	{
 		if (status)
 			PORT->Group[LED_PORT].OUTSET.reg = 1 <<LED1_PIN;
 		else
 			PORT->Group[LED_PORT].OUTCLR.reg = 1 <<LED1_PIN;
+	}
 }
 
 void dev_init()
