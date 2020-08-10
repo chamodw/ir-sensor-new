@@ -14,7 +14,7 @@
 #include "device.h"
 #include "USB/usb_lib.h"
 #include "USB/usbserial.h"
-
+#include "clock.h"
 
 int main(void)
 {

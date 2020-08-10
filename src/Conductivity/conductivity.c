@@ -12,6 +12,7 @@
 #include "conductivity.h"
 #include "../USB/usbserial.h"
 #include "../device.h"
+#include "../clock.h"
 static uint8_t g_mode;
 static uint32_t g_range;
 

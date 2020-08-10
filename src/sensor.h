@@ -86,9 +86,14 @@ Example for humidity:
 Public functions
 */
 
+//Initialize the selected sensor
 uint8_t sensor_init();
+
+//Returns a string with the human readable name for the selected sensor (For USB Descriptors)
 const char* sensor_name();
 
+//Reads the sensor and copies the data to dest buffer, returns number of values written
+uint16_t sensor_read(int16_t* dest);
 
 
 #define KIW_SENSOR_TYPE SENSOR_TYPE_COLOUR

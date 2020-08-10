@@ -67,7 +67,7 @@ int8_t veml_singleShot(uint8_t itime, uint8_t samples, uint16_t* dest)
 		i2c_write(0x20, veml_cfg, 3);
 		
 		uint32_t t = clock_getTicks();
-		while(clock_getTicks() - t < 40 << (uint32_t)itime);
+		while(clock_getTicks() - t < (41 << (uint32_t)(itime+1)));
 		
 		i2c_writeRead(0x20, &veml_cmd[0],1, (uint8_t*)&r, 2 );
 		i2c_writeRead(0x20, &veml_cmd[1],1, (uint8_t*)&g, 2 );
@@ -78,10 +78,10 @@ int8_t veml_singleShot(uint8_t itime, uint8_t samples, uint16_t* dest)
 	
 	veml_lights(0);
 	
-	colors[0]/=samples;
-	colors[1]/=samples;
-	colors[2]/=samples;
-	colors[3]/=samples;
+	//colors[0]/=samples;
+	//colors[1]/=samples;
+	//colors[2]/=samples;
+	//colors[3]/=samples;
 	
 	for (uint8_t i = 0; i < 4; i++)
 	{

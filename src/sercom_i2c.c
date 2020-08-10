@@ -50,8 +50,8 @@ void i2c_init()
 	//Set PINMUX to connect SERCOM to the I2C Pins
 	PORT->Group[0].PINCFG[22].bit.PMUXEN = 1;
 	PORT->Group[0].PINCFG[23].bit.PMUXEN = 1;
-	PORT->Group[0].PINCFG[11].reg = PORT_PMUX_PMUXE_C | PORT_PMUX_PMUXO_C;
 	
+	PORT->Group[0].PMUX[11].reg = PORT_PMUX_PMUXE_C | PORT_PMUX_PMUXO_C;
 	
 	
 #else
@@ -60,7 +60,7 @@ void i2c_init()
 	
 	PORT->Group[0].PINCFG[14].bit.PMUXEN = 1;
 	PORT->Group[0].PINCFG[15].bit.PMUXEN = 1;
-	PORT->Group[0].PMUX[7].bit.PMUXO = PORT_PMUX_PMUXE_C;
+	PORT->Group[0].PMUX[7].bit.PMUXE = PORT_PMUX_PMUXE_C;
 	PORT->Group[0].PMUX[7].bit.PMUXO = PORT_PMUX_PMUXO_C;
 	
 	
