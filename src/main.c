@@ -40,18 +40,26 @@ int main(void)
 	 Kiw_DataPacket packet;
 	 
 	sensor_init(&packet);
-//	
+
+
+	uint32_t timestamp = clock_getTicks();
 	
 	while (1)
 	{
-		uint32_t t = clock_getTicks();
-		while( clock_getTicks() - t < 10);
+	
 		
-		uint16_t count = sensor_read(packet.data);
-		packet.len = count;
+	//	uint16_t count = sensor_read(packet.data);
+		//packet.len = count;
 		packet.seq ++;
 
+		dev_led(1,1);
+		while((clock_getTicks()-timestamp) < 100);
+		
+		timestamp = clock_getTicks();
+		dev_led(1, 0);
 		usbserial_tx((uint8_t*)&packet, sizeof(packet));
+
+		
 	}
 	
 

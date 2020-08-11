@@ -27,7 +27,7 @@ uint8_t sensor_init(Kiw_DataPacket* packet)
 	g_packet->seq = 0;
 	
 	
-	uint8_t e = K_STATUS_UNKNOWN;
+	uint8_t e = K_SENSOR_STATUS_UNKNOWN;
 	
 #if KIW_SENSOR_TYPE == SENSOR_TYPE_CONDUCTIVTIY
 	e = cdt_init();

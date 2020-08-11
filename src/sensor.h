@@ -30,7 +30,7 @@ Definitions
 
 //Error codes
 #define K_SENSOR_OK			0
-#define K_STATUS_UNKNOWN	1
+#define K_SENSOR_STATUS_UNKNOWN	1
 
 
 
