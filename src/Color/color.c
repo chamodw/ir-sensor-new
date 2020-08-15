@@ -8,6 +8,17 @@
 
 #include "color.h"
 #include "../sensor.h"
+#include "../device.h"
+
+//LED illumination for RGB Sensor
+void veml_lights(uint8_t l)
+{
+	if (l)
+	PORT->Group[0].OUTSET.reg = 1 << 17;
+	else
+	PORT->Group[0].OUTCLR.reg = 1 << 17;
+	
+}
 
 
 //Init veml RGB sensor for single shot operation
@@ -27,15 +38,6 @@ int8_t veml_init()
 const uint8_t veml_cmd[4] = {0x08, 0x09, 0x0A, 0x0B};
 
 
-//LED illumination for RGB Sensor
-void veml_lights(uint8_t l)
-{
-	if (l)
-	PORT->Group[0].OUTSET.reg = 1 << 17;
-	else
-	PORT->Group[0].OUTCLR.reg = 1 << 17;
-	
-}
 
 
 /*

@@ -168,7 +168,7 @@ void clock_init()
 	{
 		.bit.CLKEN = 1,
 		.bit.GEN = 4, //Use GCLK4
-		.bit.ID = 0x1e, //GCLK_ADC
+		.bit.ID = GCLK_CLKCTRL_ID_ADC_Val, //GCLK_ADC
 		.bit.WRTLOCK = 0
 	};
 	GCLK->CLKCTRL.reg = gclk_clkctrladc.reg;

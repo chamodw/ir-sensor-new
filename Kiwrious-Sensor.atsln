@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Atmel Studio Solution File, Format Version 11.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Sensor-D21", "Sensor-D21\Sensor-D21.cproj", "{22278AF2-5295-4E1C-B80F-187A062B7B1C}"
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Sensor_D11", "Sensor_D11\Sensor_D11.cproj", "{389D21F6-4391-46E7-ADB9-FEDE9C28F400}"
 EndProject
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Sensor-D11", "Sensor-D11\Sensor-D11.cproj", "{389D21F6-4391-46E7-ADB9-FEDE9C28F400}"
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Sensor_D21", "Sensor_D21\Sensor_D21.cproj", "{22278AF2-5295-4E1C-B80F-187A062B7B1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|ARM = Release|ARM
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{22278AF2-5295-4E1C-B80F-187A062B7B1C}.Debug|ARM.ActiveCfg = Debug|ARM
-		{22278AF2-5295-4E1C-B80F-187A062B7B1C}.Debug|ARM.Build.0 = Debug|ARM
-		{22278AF2-5295-4E1C-B80F-187A062B7B1C}.Release|ARM.ActiveCfg = Release|ARM
-		{22278AF2-5295-4E1C-B80F-187A062B7B1C}.Release|ARM.Build.0 = Release|ARM
 		{389D21F6-4391-46E7-ADB9-FEDE9C28F400}.Debug|ARM.ActiveCfg = Debug|ARM
 		{389D21F6-4391-46E7-ADB9-FEDE9C28F400}.Debug|ARM.Build.0 = Debug|ARM
 		{389D21F6-4391-46E7-ADB9-FEDE9C28F400}.Release|ARM.ActiveCfg = Release|ARM
 		{389D21F6-4391-46E7-ADB9-FEDE9C28F400}.Release|ARM.Build.0 = Release|ARM
+		{22278AF2-5295-4E1C-B80F-187A062B7B1C}.Debug|ARM.ActiveCfg = Debug|ARM
+		{22278AF2-5295-4E1C-B80F-187A062B7B1C}.Debug|ARM.Build.0 = Debug|ARM
+		{22278AF2-5295-4E1C-B80F-187A062B7B1C}.Release|ARM.ActiveCfg = Release|ARM
+		{22278AF2-5295-4E1C-B80F-187A062B7B1C}.Release|ARM.Build.0 = Release|ARM
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

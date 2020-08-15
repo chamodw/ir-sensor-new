@@ -1,0 +1,399 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>7.0</ProjectVersion>
+    <ToolchainName>com.Atmel.ARMGCC.C</ToolchainName>
+    <ProjectGuid>{22278af2-5295-4e1c-b80f-187a062b7b1c}</ProjectGuid>
+    <avrdevice>ATSAMD21G18A</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <OutputType>Executable</OutputType>
+    <Language>C</Language>
+    <OutputFileName>$(MSBuildProjectName)</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <AssemblyName>Sensor-D21</AssemblyName>
+    <Name>Sensor_D21</Name>
+    <RootNamespace>Sensor-D21</RootNamespace>
+    <ToolchainFlavour>Native</ToolchainFlavour>
+    <KeepTimersRunning>true</KeepTimersRunning>
+    <OverrideVtor>false</OverrideVtor>
+    <CacheFlash>true</CacheFlash>
+    <ProgFlashFromRam>true</ProgFlashFromRam>
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
+    <UncachedRange />
+    <preserveEEPROM>true</preserveEEPROM>
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
+    <BootSegment>2</BootSegment>
+    <ResetRule>0</ResetRule>
+    <eraseonlaunchrule>1</eraseonlaunchrule>
+    <EraseKey />
+    <AsfFrameworkConfig>
+      <framework-data xmlns="">
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.48.0" />
+        </dependencies>
+      </framework-data>
+    </AsfFrameworkConfig>
+    <avrtool>com.atmel.avrdbg.tool.samice</avrtool>
+    <avrtoolserialnumber>261005414</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x10010305</avrdeviceexpectedsignature>
+    <avrtoolinterface>SWD</avrtoolinterface>
+    <com_atmel_avrdbg_tool_samice>
+      <ToolOptions>
+        <InterfaceProperties>
+          <SwdClock>4000000</SwdClock>
+        </InterfaceProperties>
+        <InterfaceName>SWD</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.samice</ToolType>
+      <ToolNumber>261005414</ToolNumber>
+      <ToolName>J-Link</ToolName>
+    </com_atmel_avrdbg_tool_samice>
+    <avrtoolinterfaceclock>4000000</avrtoolinterfaceclock>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <ToolchainSettings>
+      <ArmGcc>
+  <armgcc.common.outputfiles.hex>True</armgcc.common.outputfiles.hex>
+  <armgcc.common.outputfiles.lss>True</armgcc.common.outputfiles.lss>
+  <armgcc.common.outputfiles.eep>True</armgcc.common.outputfiles.eep>
+  <armgcc.common.outputfiles.bin>True</armgcc.common.outputfiles.bin>
+  <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
+  <armgcc.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>NDEBUG</Value>
+    </ListValues>
+  </armgcc.compiler.symbols.DefSymbols>
+  <armgcc.compiler.directories.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\arm\CMSIS\5.4.0\CMSIS\Core\Include\</Value>
+      <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.395\samd21a\include</Value>
+    </ListValues>
+  </armgcc.compiler.directories.IncludePaths>
+  <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
+  <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
+  <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
+  <armgcc.linker.libraries.Libraries>
+    <ListValues>
+      <Value>libm</Value>
+    </ListValues>
+  </armgcc.linker.libraries.Libraries>
+  <armgcc.linker.libraries.LibrarySearchPaths>
+    <ListValues>
+      <Value>%24(ProjectDir)\Device_Startup</Value>
+    </ListValues>
+  </armgcc.linker.libraries.LibrarySearchPaths>
+  <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
+  <armgcc.linker.miscellaneous.LinkerFlags>-Tsamd21g18a_flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
+  <armgcc.assembler.general.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\arm\CMSIS\5.4.0\CMSIS\Core\Include\</Value>
+      <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.395\samd21a\include</Value>
+    </ListValues>
+  </armgcc.assembler.general.IncludePaths>
+  <armgcc.preprocessingassembler.general.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\arm\CMSIS\5.4.0\CMSIS\Core\Include\</Value>
+      <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.395\samd21a\include</Value>
+    </ListValues>
+  </armgcc.preprocessingassembler.general.IncludePaths>
+</ArmGcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ToolchainSettings>
+      <ArmGcc>
+  <armgcc.common.outputfiles.hex>True</armgcc.common.outputfiles.hex>
+  <armgcc.common.outputfiles.lss>True</armgcc.common.outputfiles.lss>
+  <armgcc.common.outputfiles.eep>True</armgcc.common.outputfiles.eep>
+  <armgcc.common.outputfiles.bin>True</armgcc.common.outputfiles.bin>
+  <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
+  <armgcc.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>DEBUG</Value>
+      <Value>K_SAMD21_</Value>
+    </ListValues>
+  </armgcc.compiler.symbols.DefSymbols>
+  <armgcc.compiler.directories.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\arm\CMSIS\5.4.0\CMSIS\Core\Include\</Value>
+      <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.395\samd21a\include</Value>
+    </ListValues>
+  </armgcc.compiler.directories.IncludePaths>
+  <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
+  <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
+  <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
+  <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
+  <armgcc.compiler.warnings.Undefined>True</armgcc.compiler.warnings.Undefined>
+  <armgcc.linker.libraries.Libraries>
+    <ListValues>
+      <Value>libm</Value>
+    </ListValues>
+  </armgcc.linker.libraries.Libraries>
+  <armgcc.linker.libraries.LibrarySearchPaths>
+    <ListValues>
+      <Value>%24(ProjectDir)\Device_Startup</Value>
+    </ListValues>
+  </armgcc.linker.libraries.LibrarySearchPaths>
+  <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
+  <armgcc.linker.memorysettings.ExternalRAM />
+  <armgcc.linker.miscellaneous.LinkerFlags>-Tsamd21g18a_flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
+  <armgcc.assembler.general.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\arm\CMSIS\5.4.0\CMSIS\Core\Include\</Value>
+      <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.395\samd21a\include</Value>
+    </ListValues>
+  </armgcc.assembler.general.IncludePaths>
+  <armgcc.assembler.debugging.DebugLevel>Default (-g)</armgcc.assembler.debugging.DebugLevel>
+  <armgcc.preprocessingassembler.general.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\arm\CMSIS\5.4.0\CMSIS\Core\Include\</Value>
+      <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.395\samd21a\include</Value>
+    </ListValues>
+  </armgcc.preprocessingassembler.general.IncludePaths>
+  <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
+</ArmGcc>
+    </ToolchainSettings>
+    <PostBuildEvent>ubuntu.exe run /mnt/c/Users/csam754/Documents/Projects/Kiwrious/Firmware/Bootloader/DFU/dx1elf2dfu $(OutputFileName).elf "../../DFU-Files/$(OutputFileName).dfu"
+</PostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\src\bodyTemp.c">
+      <SubType>compile</SubType>
+      <Link>bodyTemp.c</Link>
+    </Compile>
+    <Compile Include="..\src\clock.c">
+      <SubType>compile</SubType>
+      <Link>clock.c</Link>
+    </Compile>
+    <Compile Include="..\src\clock.h">
+      <SubType>compile</SubType>
+      <Link>clock.h</Link>
+    </Compile>
+    <Compile Include="..\src\Color\color.c">
+      <SubType>compile</SubType>
+      <Link>Color\color.c</Link>
+    </Compile>
+    <Compile Include="..\src\Color\color.h">
+      <SubType>compile</SubType>
+      <Link>Color\color.h</Link>
+    </Compile>
+    <Compile Include="..\src\Conductivity\conductivity.c">
+      <SubType>compile</SubType>
+      <Link>Conductivity\conductivity.c</Link>
+    </Compile>
+    <Compile Include="..\src\Conductivity\conductivity.h">
+      <SubType>compile</SubType>
+      <Link>Conductivity\conductivity.h</Link>
+    </Compile>
+    <Compile Include="..\src\device.c">
+      <SubType>compile</SubType>
+      <Link>device.c</Link>
+    </Compile>
+    <Compile Include="..\src\device.h">
+      <SubType>compile</SubType>
+      <Link>device.h</Link>
+    </Compile>
+    <Compile Include="..\src\main.c">
+      <SubType>compile</SubType>
+      <Link>main.c</Link>
+    </Compile>
+    <Compile Include="..\src\particle.h">
+      <SubType>compile</SubType>
+      <Link>particle.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\humidity.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\humidity.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\senserion_sensors.c">
+      <SubType>compile</SubType>
+      <Link>Sensirion\senserion_sensors.c</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sensirion_arch_config.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sensirion_arch_config.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sensirion_common.c">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sensirion_common.c</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sensirion_common.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sensirion_common.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sensirion_humidity_conversion.c">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sensirion_humidity_conversion.c</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sensirion_humidity_conversion.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sensirion_humidity_conversion.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sensirion_hw_i2c_implementation.c">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sensirion_hw_i2c_implementation.c</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sensirion_i2c.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sensirion_i2c.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sensirion_sensors.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sensirion_sensors.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sensirion_temperature_unit_conversion.c">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sensirion_temperature_unit_conversion.c</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sensirion_temperature_unit_conversion.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sensirion_temperature_unit_conversion.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sgp30.c">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sgp30.c</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sgp30.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sgp30.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sgpc3.c">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sgpc3.c</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sgpc3.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sgpc3.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sgpc3_with_shtc1.c">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sgpc3_with_shtc1.c</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sgpc3_with_shtc1.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sgpc3_with_shtc1.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sgp_git_version.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sgp_git_version.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sht3x.c">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sht3x.c</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sht3x.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sht3x.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\shtc1.c">
+      <SubType>compile</SubType>
+      <Link>Sensirion\shtc1.c</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\shtc1.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\shtc1.h</Link>
+    </Compile>
+    <Compile Include="..\src\Sensirion\sht_git_version.h">
+      <SubType>compile</SubType>
+      <Link>Sensirion\sht_git_version.h</Link>
+    </Compile>
+    <Compile Include="..\src\sensor.c">
+      <SubType>compile</SubType>
+      <Link>sensor.c</Link>
+    </Compile>
+    <Compile Include="..\src\sensor.h">
+      <SubType>compile</SubType>
+      <Link>sensor.h</Link>
+    </Compile>
+    <Compile Include="..\src\sercom_i2c.c">
+      <SubType>compile</SubType>
+      <Link>sercom_i2c.c</Link>
+    </Compile>
+    <Compile Include="..\src\sercom_i2c.h">
+      <SubType>compile</SubType>
+      <Link>sercom_i2c.h</Link>
+    </Compile>
+    <Compile Include="..\src\syscalls.c">
+      <SubType>compile</SubType>
+      <Link>syscalls.c</Link>
+    </Compile>
+    <Compile Include="..\src\USB\Class\cdc_standard.h">
+      <SubType>compile</SubType>
+      <Link>USB\Class\cdc_standard.h</Link>
+    </Compile>
+    <Compile Include="..\src\USB\Class\dfu.c">
+      <SubType>compile</SubType>
+      <Link>USB\Class\dfu.c</Link>
+    </Compile>
+    <Compile Include="..\src\USB\Class\dfu.h">
+      <SubType>compile</SubType>
+      <Link>USB\Class\dfu.h</Link>
+    </Compile>
+    <Compile Include="..\src\USB\usb.c">
+      <SubType>compile</SubType>
+      <Link>USB\usb.c</Link>
+    </Compile>
+    <Compile Include="..\src\USB\usbserial.c">
+      <SubType>compile</SubType>
+      <Link>USB\usbserial.c</Link>
+    </Compile>
+    <Compile Include="..\src\USB\usbserial.h">
+      <SubType>compile</SubType>
+      <Link>USB\usbserial.h</Link>
+    </Compile>
+    <Compile Include="..\src\USB\usb_lib.h">
+      <SubType>compile</SubType>
+      <Link>USB\usb_lib.h</Link>
+    </Compile>
+    <Compile Include="..\src\USB\usb_requests.c">
+      <SubType>compile</SubType>
+      <Link>USB\usb_requests.c</Link>
+    </Compile>
+    <Compile Include="..\src\USB\usb_samd.c">
+      <SubType>compile</SubType>
+      <Link>USB\usb_samd.c</Link>
+    </Compile>
+    <Compile Include="..\src\USB\usb_samd.h">
+      <SubType>compile</SubType>
+      <Link>USB\usb_samd.h</Link>
+    </Compile>
+    <Compile Include="..\src\USB\usb_samd_internal.h">
+      <SubType>compile</SubType>
+      <Link>USB\usb_samd_internal.h</Link>
+    </Compile>
+    <Compile Include="..\src\USB\usb_standard.h">
+      <SubType>compile</SubType>
+      <Link>USB\usb_standard.h</Link>
+    </Compile>
+    <Compile Include="Device_Startup\startup_samd21.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Device_Startup\system_samd21.c">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Device_Startup\" />
+    <Folder Include="Color" />
+    <Folder Include="Conductivity" />
+    <Folder Include="Sensirion" />
+    <Folder Include="USB" />
+    <Folder Include="USB\Class" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Device_Startup\samd21g18a_flash.ld">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="Device_Startup\samd21g18a_sram.ld">
+      <SubType>compile</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
+</Project>

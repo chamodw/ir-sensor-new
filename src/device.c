@@ -62,3 +62,33 @@ void NMI_Handler()
 		t = clock_getTicks();
 	}*/
 }
+
+#define NIBBLETOHEX(X) ((X) < 10) ? ((X)+'0') : ((X)+'A')
+
+void i2c_scan()
+{
+	//i2c_init();
+	char outstr=256;
+	char* w =outstr;
+	for (uint16_t addr = 1; addr <= 0x7f; addr++)
+	{
+		if (!i2c_testAddr(addr))
+		{
+			*w++ = '-';
+			*w++ = '-';
+		}
+		else
+		{
+			*w++ = NIBBLETOHEX(addr&0xff);
+			*w++ = NIBBLETOHEX(addr>>8);
+		}
+	}
+
+	for(uint8_t i = 0; i<4; i++)
+	{
+		usbserial_tx(outstr, 64);
+		outstr+= 64;
+		while(usbserial_txBusy());
+		
+	}	
+}

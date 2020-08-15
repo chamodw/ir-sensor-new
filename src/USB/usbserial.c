@@ -151,3 +151,8 @@ void flash_usb_out_completion()
 {
 	
 }
+
+uint8_t usbserial_txBusy()
+{
+	return tx_busy;
+}

@@ -29,7 +29,7 @@ __attribute__((__aligned__(4))) const USB_DeviceDescriptor device_descriptor = {
 	.bMaxPacketSize0        = 64,
 	.idVendor               = 0x04D8,
 	.idProduct              = 0xEC19,
-	.bcdDevice              = 0x0114,
+	.bcdDevice              = 0x0115,
 
 	.iManufacturer          = 0x01,
 	.iProduct               = 0x02,

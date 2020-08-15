@@ -22,11 +22,15 @@ static volatile uint8_t rs;
 
 static volatile I2CM_STATUS i2c_status;
 
+static volatile uint8_t slave_ack; //set if a slave nacks
+
 #ifdef K_SAMD21_
 #define SERCOMX SERCOM3
 #else
 #define SERCOMX SERCOM0
 #endif
+
+
 
 
 void i2c_init()
@@ -113,12 +117,23 @@ uint8_t i2c_getStatus()
 	return (uint8_t)i2c_status;
 }
 
+
+uint8_t i2c_testAddr(uint8_t addr)
+{
+	slave_ack = 0;
+	i2c_write(addr, &slave_ack, 0); //no data, just a dummy pointer
+	while(i2c_getStatus() != IDLE);
+	
+	return slave_ack;
+}
+
 void i2c_write(uint8_t addr,  const uint8_t* data, uint8_t n)
 {
 
 
 	rs = 0; // Don't need repeat start
-
+	
+	
 	while(i2c_status != IDLE);
 	
 	
@@ -247,6 +262,13 @@ void SERCOM0_Handler()
 			if (!status.bit.RXNACK && status.bit.CLKHOLD)
 			{
 				i2c_status = DATA_W;
+				if (n_out == 0) //Special case (no data, just write slave address and check for ACK/NACK)
+				{
+					slave_ack = 1;
+					i2c_cmd(0, 3); //generate stop
+					i2c_status = IDLE;	
+				}
+				
 				SERCOMX->I2CM.DATA.bit.DATA = buffer_out[idx_out];
 				//SEGGER_RTT_printf(0, "\tidx_out %d\n", idx_out);
 				idx_out++;
@@ -255,7 +277,10 @@ void SERCOM0_Handler()
 			else
 			{
 				if(status.bit.RXNACK)
+				{
 					i2c_cmd(0, 3); //stop if slave sent NACK
+					slave_ack = 0;
+				}
 				i2c_status = IDLE;
 			}
 			break;
@@ -344,6 +369,7 @@ void SERCOM0_Handler()
 			else
 			{
 				i2c_cmd(0, 3); //nack, stop
+				slave_ack = 1;
 				i2c_status = IDLE;
 				
 			}
