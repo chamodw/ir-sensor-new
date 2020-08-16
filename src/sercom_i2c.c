@@ -127,7 +127,8 @@ uint8_t i2c_getStatus()
 uint8_t i2c_testAddr(uint8_t addr)
 {
 	slave_ack = 0;
-	i2c_write(addr, &slave_ack, 0); //no data, just a dummy pointer
+	
+	i2c_write(addr, 0, 0); //no data
 	while(i2c_getStatus() != IDLE);
 	
 	return slave_ack;
@@ -151,7 +152,7 @@ void i2c_write(uint8_t addr,  const uint8_t* data, uint8_t n)
 	//Copy data to local buffer
 	uint8_t i = 0;
 	for(i =0; i < n; i++)
-	buffer_out[i] = data[i] ;
+		buffer_out[i] = data[i] ;
 	
 	i2c_status = ADDR_W;
 	idx_out = 0;
@@ -394,25 +395,3 @@ void SERCOM0_Handler()
 }
 
 
-#define NIBBLETOHEX(X) (((X) < 10) ? ((X)+'0') : ((X)-10+'A'))
-
-void i2c_scan()
-{
-	//i2c_init();
-	char outstr[256];
-	
-	char* w =outstr;
-	for (uint16_t addr = 0x0a; addr <= 0xff; addr+=2)
-	{
-		if (i2c_testAddr(addr))
-		{
-			
-			*w++ = NIBBLETOHEX(addr>>4);
-			*w++ = NIBBLETOHEX(addr&0xf);
-			*w++ = '\n';
-		}
-	}
-
-	*w++ = 0;
-	usbserial_tx(outstr, strlen(outstr));
-}
