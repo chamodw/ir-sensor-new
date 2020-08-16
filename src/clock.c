@@ -19,6 +19,8 @@ void clock_init()
 {
 	NVMCTRL->CTRLB.bit.RWS = 1; //1 flash wait state for 48MHz
 	
+	
+#if USE_USB_CLOCK_RECOVERY == 0
 	// Load a variable with XOS32K parameters
 	SYSCTRL_XOSC32K_Type xos32k =
 	{
@@ -34,6 +36,10 @@ void clock_init()
 	SYSCTRL->XOSC32K.bit.ENABLE = 1; //Enable should be written to separately (datasheet)
 	while (!SYSCTRL->PCLKSR.bit.XOSC32KRDY); //Wait for clock
 	
+	
+	/*
+	XOS32K ->
+	*/
 	
 	// Load a variable with GCLK GENDIV values
 	GCLK_GENDIV_Type gclk_gendiv =
@@ -60,6 +66,11 @@ void clock_init()
 	//Wait for clock
 	while(GCLK->STATUS.bit.SYNCBUSY);
 	
+	/*
+	XOS32K -> GCLK1 ->
+	*/
+	
+	
 	//Configure GCLK Multiplexer 0 (DFLL48M reference)
 	GCLK_CLKCTRL_Type gclk_clkctrl =
 	{
@@ -70,14 +81,14 @@ void clock_init()
 	};
 	//Load settings
 	GCLK->CLKCTRL.reg = gclk_clkctrl.reg;
-	
-	
-	
+		
+		
+		
 	//Start DFLL48M in open loop mode
 	while(!SYSCTRL->PCLKSR.bit.DFLLRDY);
 	SYSCTRL->DFLLCTRL.reg = SYSCTRL_DFLLCTRL_ENABLE;
 	while(!SYSCTRL->PCLKSR.bit.DFLLRDY); //Wait for sync
-	
+		
 	SYSCTRL_DFLLMUL_Type sysctrl_dfllmul =
 	{
 		.bit.CSTEP = 31,
@@ -91,6 +102,39 @@ void clock_init()
 	SYSCTRL->DFLLCTRL.bit.MODE = 1;
 	while(!SYSCTRL->PCLKSR.bit.DFLLRDY);
 	
+	/*
+	XOS32K -> GCLK1 -> DFLL48M
+	*/
+	
+#else
+	
+	
+	//Start DFLL48M in open loop mode
+	while(!SYSCTRL->PCLKSR.bit.DFLLRDY);
+	SYSCTRL->DFLLCTRL.reg = SYSCTRL_DFLLCTRL_ENABLE | SYSCTRL_DFLLCTRL_USBCRM  | SYSCTRL_DFLLCTRL_CCDIS;
+	while(!SYSCTRL->PCLKSR.bit.DFLLRDY); //Wait for sync
+	
+	SYSCTRL->DFLLVAL.bit.COARSE = 0x18;
+	
+	SYSCTRL_DFLLMUL_Type sysctrl_dfllmul =
+	{
+		.bit.CSTEP = 24,
+		.bit.FSTEP = 511,
+		.bit.MUL = 0xbb80 // 48MHz / reference clock (32.768KHz)
+	};
+	SYSCTRL->DFLLMUL.reg = sysctrl_dfllmul.reg;
+	while(!SYSCTRL->PCLKSR.bit.DFLLRDY);
+	
+	SYSCTRL->DFLLCTRL.bit.MODE = 1;
+	
+	/*	
+		DFLL48M (USBCRM) ->
+	*/
+	
+#endif
+
+
+
 	
 	//Configure GCLK0 to run from DFLL48M
 
@@ -107,7 +151,9 @@ void clock_init()
 	};
 	GCLK->GENCTRL.reg = gclk_genctrl0.reg;
 	while(GCLK->STATUS.bit.SYNCBUSY);
-	
+	/*
+	DFLL48M -> GCLK0
+	*/
 	
 	
 	//Set GCLK_USB to use GCLK0

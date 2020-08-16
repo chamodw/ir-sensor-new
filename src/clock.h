@@ -11,6 +11,8 @@
 
 #include "sam.h"
 
+#define	USE_USB_CLOCK_RECOVERY 1
+
 void clock_init();
 uint32_t clock_getTicks();
 
