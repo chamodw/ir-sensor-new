@@ -35,18 +35,6 @@ int main(void)
 	while((clock_getTicks()-tick)<100);
 	
 	usbserial_init();
-	
-
-	while(1)
-	{
-		uint32_t timestamp = clock_getTicks();
-			while((clock_getTicks()-timestamp) < 1000);
-			
-			
-	
-	
-	i2c_scan();
-	}
 
 
 	 Kiw_DataPacket packet;
