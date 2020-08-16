@@ -64,6 +64,12 @@ void i2c_init()
 	
 	PORT->Group[0].PINCFG[14].bit.PMUXEN = 1;
 	PORT->Group[0].PINCFG[15].bit.PMUXEN = 1;
+	
+	PORT->Group[0].PINCFG[14].bit.PULLEN = 1;
+	PORT->Group[0].PINCFG[15].bit.PULLEN = 1;
+	
+	PORT->Group[0].OUTSET.reg = (1 << 14) | (1 << 15);
+	
 	PORT->Group[0].PMUX[7].bit.PMUXE = PORT_PMUX_PMUXE_C;
 	PORT->Group[0].PMUX[7].bit.PMUXO = PORT_PMUX_PMUXO_C;
 	
@@ -385,4 +391,28 @@ void SERCOM0_Handler()
 	
 	
 	SERCOMX->I2CM.INTFLAG.reg = flags;
+}
+
+
+#define NIBBLETOHEX(X) (((X) < 10) ? ((X)+'0') : ((X)-10+'A'))
+
+void i2c_scan()
+{
+	//i2c_init();
+	char outstr[256];
+	
+	char* w =outstr;
+	for (uint16_t addr = 0x0a; addr <= 0xff; addr+=2)
+	{
+		if (i2c_testAddr(addr))
+		{
+			
+			*w++ = NIBBLETOHEX(addr>>4);
+			*w++ = NIBBLETOHEX(addr&0xf);
+			*w++ = '\n';
+		}
+	}
+
+	*w++ = 0;
+	usbserial_tx(outstr, strlen(outstr));
 }

@@ -63,32 +63,25 @@ void NMI_Handler()
 	}*/
 }
 
-#define NIBBLETOHEX(X) ((X) < 10) ? ((X)+'0') : ((X)+'A')
+#define NIBBLETOHEX(X) (((X) < 10) ? ((X)+'0') : ((X)-10+'A'))
 
 void i2c_scan()
 {
 	//i2c_init();
-	char outstr=256;
+	char outstr[256];
+	
 	char* w =outstr;
-	for (uint16_t addr = 1; addr <= 0x7f; addr++)
+	for (uint16_t addr = 0x0a; addr <= 0xff; addr+=2)
 	{
-		if (!i2c_testAddr(addr))
+		if (i2c_testAddr(addr))
 		{
-			*w++ = '-';
-			*w++ = '-';
-		}
-		else
-		{
-			*w++ = NIBBLETOHEX(addr&0xff);
-			*w++ = NIBBLETOHEX(addr>>8);
+		
+			*w++ = NIBBLETOHEX(addr>>4);
+			*w++ = NIBBLETOHEX(addr&0xf);
+			*w++ = '\n';
 		}
 	}
 
-	for(uint8_t i = 0; i<4; i++)
-	{
-		usbserial_tx(outstr, 64);
-		outstr+= 64;
-		while(usbserial_txBusy());
-		
-	}	
+	*w++ = 0;
+	usbserial_tx(outstr, strlen(outstr));
 }
