@@ -22,6 +22,7 @@ Kiw_DataPacket* g_packet;
 uint8_t sensor_init(Kiw_DataPacket* packet)
 {
 	g_packet = packet;
+	g_packet->type = (K_PKT_TYPE_DATA << 8) | (KIW_SENSOR_TYPE );
 	g_packet->header = 0x0A0A;
 	g_packet->footer = 0x0B0B;
 	g_packet->seq = 0;
