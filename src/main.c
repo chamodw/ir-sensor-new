@@ -24,8 +24,6 @@ int main(void)
 	dev_init(); //Initialize device
 	
 
-	i2c_init();
-
 	
 	usb_init();
 	usb_attach();
@@ -36,6 +34,17 @@ int main(void)
 	
 	usbserial_init();
 
+
+	i2c_init();
+
+	
+	while(1)
+	{
+		//i2c_scan();
+		uint32_t tick = clock_getTicks();
+		while((clock_getTicks()-tick)<100);
+		
+	}
 
 	 Kiw_DataPacket packet;
 	 

@@ -161,7 +161,7 @@
 </ArmGcc>
     </ToolchainSettings>
     <PostBuildEvent>ubuntu.exe run /mnt/c/Users/csam754/Documents/Projects/Kiwrious/Firmware/Bootloader/DFU/dx1elf2dfu $(OutputFileName).elf "../../DFU-Files/$(OutputFileName).dfu"
-</PostBuildEvent>
+ </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\src\bodyTemp.c">

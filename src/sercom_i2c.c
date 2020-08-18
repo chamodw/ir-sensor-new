@@ -35,7 +35,11 @@ static volatile uint8_t slave_ack; //set if a slave nacks
 
 void i2c_init()
 {
-		//Sending 9 pulses on SCL will reset any slave
+	
+
+#ifdef K_SAMD21_
+
+	//Sending 9 pulses on SCL will reset any slave
 	uint8_t i= 9;
 	
 	PORT->Group[0].OUTCLR.reg = 1 << 23;
@@ -47,8 +51,6 @@ void i2c_init()
 		PORT->Group[0].DIRTGL.reg = 1 << 23;
 	}
 	
-
-#ifdef K_SAMD21_
 	PM->APBCMASK.bit.SERCOM3_ = 1;		//Enable APB Clock for SERCOM3
 	
 	//Set PINMUX to connect SERCOM to the I2C Pins
@@ -59,19 +61,34 @@ void i2c_init()
 	
 	
 #else
-	PM->APBCMASK.bit.SERCOM0_ = 1;		//Enable APB Clock for SERCOM30
-	
-	
+
+
+	//Sending 9 pulses on SCL will reset any slave
+	uint8_t i= 9;
+
+	PORT->Group[0].OUTCLR.reg = 1 << 15;
+	PORT->Group[0].DIRSET.reg = 1 << 15;
+	while(i--)
+	{
+		uint32_t t = clock_getTicks();
+		while((clock_getTicks()-t) < 10);
+		PORT->Group[0].DIRTGL.reg = (1 << 15);
+	}
+
+
+	PM->APBCMASK.bit.SERCOM0_ = 1;		//Enable APB Clock for SERCOM0
+
+
 	PORT->Group[0].PINCFG[14].bit.PMUXEN = 1;
 	PORT->Group[0].PINCFG[15].bit.PMUXEN = 1;
-	
+
 	PORT->Group[0].PINCFG[14].bit.PULLEN = 1;
 	PORT->Group[0].PINCFG[15].bit.PULLEN = 1;
 	
 	PORT->Group[0].OUTSET.reg = (1 << 14) | (1 << 15);
 	
-	PORT->Group[0].PMUX[7].bit.PMUXE = PORT_PMUX_PMUXE_C;
-	PORT->Group[0].PMUX[7].bit.PMUXO = PORT_PMUX_PMUXO_C;
+	PORT->Group[0].PMUX[7].reg = PORT_PMUX_PMUXE_G | PORT_PMUX_PMUXO_C;
+
 	
 	
 #endif

@@ -184,7 +184,7 @@ void clock_init()
 		.bit.DIVSEL = 0,
 		.bit.GENEN = 1,
 		.bit.ID = 4,
-		.bit.OE = 0,
+		.bit.OE = 1,
 		.bit.OOV = 0,
 		.bit.IDC = 1,
 		.bit.RUNSTDBY = 0,
