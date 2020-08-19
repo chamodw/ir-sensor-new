@@ -10,7 +10,7 @@
 #include "Sensirion/sensirion_sensors.h"
 #include "sam.h"
 #include "Color/color.h"
-
+#include "UV/si1133.h"
 
 Kiw_DataPacket* g_packet;
 
@@ -38,6 +38,8 @@ uint8_t sensor_init(Kiw_DataPacket* packet)
 	e = tvoc_init();
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_COLOUR
 	e = veml_init();
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
+	e = Si1133_init();
 #endif
 
 
@@ -60,6 +62,8 @@ const char* sensor_name()
 	const char* s =  "Kiwrious VOC Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_COLOUR
 	const char* s =  "Kiwrious Colour Sensor";
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
+const char* s =  "Kiwrious UV Sensor";
 	#else
 	const char* s = "Kiwrious Sensor";
 #endif

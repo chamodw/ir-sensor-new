@@ -36,10 +36,34 @@ int main(void)
 	
 	usbserial_init();
 
+	
 
 	 Kiw_DataPacket packet;
 	 
 	sensor_init(&packet);
+
+dev_led(1,1);	
+	while(1)
+	{
+		
+		
+	
+			dev_led(1, 0);
+			
+			float uv,  lux;
+			
+			//Si1133_getResult(&uv, &lux);
+			uint8_t tmp_data[8];
+			get_measurement(tmp_data, &tmp_data[4]);
+			usbserial_tx(tmp_data, 8);
+			
+			uint32_t timestamp = clock_getTicks();
+			while((clock_getTicks()-timestamp) < 100);
+			
+			
+			dev_led(1,1);	
+		
+	}
 
 
 	uint32_t timestamp = clock_getTicks();
@@ -48,15 +72,15 @@ int main(void)
 	{
 	
 		
-	//	uint16_t count = sensor_read(packet.data);
-		//packet.len = count;
+		uint16_t count = sensor_read(packet.data);
+		packet.len = count;
 		packet.seq ++;
 
-		dev_led(1,1);
+	//	dev_led(1,1);
 		while((clock_getTicks()-timestamp) < 100);
 		
 		timestamp = clock_getTicks();
-		dev_led(1, 0);
+	//	dev_led(1, 0);
 		usbserial_tx((uint8_t*)&packet, sizeof(packet));
 
 		

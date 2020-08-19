@@ -36,16 +36,16 @@ static volatile uint8_t slave_ack; //set if a slave nacks
 void i2c_init()
 {
 		//Sending 9 pulses on SCL will reset any slave
-	uint8_t i= 9;
-	
-	PORT->Group[0].OUTCLR.reg = 1 << 23;
-	PORT->Group[0].DIRSET.reg = 1 << 23;
-	while(i--)
-	{
-		uint32_t t = clock_getTicks();
-		while((clock_getTicks()-t) < 10);
-		PORT->Group[0].DIRTGL.reg = 1 << 23;
-	}
+	//uint8_t i= 9;
+	//
+	//PORT->Group[0].OUTCLR.reg = 1 << 23;
+	//PORT->Group[0].DIRSET.reg = 1 << 23;
+	//while(i--)
+	//{
+		//uint32_t t = clock_getTicks();
+		//while((clock_getTicks()-t) < 10);
+		//PORT->Group[0].DIRTGL.reg = 1 << 23;
+	//}
 	
 
 #ifdef K_SAMD21_
@@ -356,6 +356,8 @@ void SERCOM0_Handler()
 					}
 					
 				}
+				else
+					i2c_status = IDLE; //IS THIS OK???
 				
 			}
 			break;
@@ -369,7 +371,8 @@ void SERCOM0_Handler()
 					buffer_in[idx_in] = SERCOMX->I2CM.DATA.bit.DATA;
 					i2c_cmd(1, 2); //ack, read
 					idx_in++;
-					i2c_status = DATA_R;
+					if (idx_in == n_in)
+						i2c_status = IDLE;
 				}
 				
 			}
