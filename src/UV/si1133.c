@@ -22,9 +22,9 @@
  ******************************************************************************/
 //DSPIC33CH64MP202 Driver Kiwrious UV
 //----------------------------------------------------------------------------------------------------------
-//Version 0.0
+//Version 0.1
 //----------------------------------------------------------------------------------------------------------
-//Microprocessor: DSPIC33CH64MP202
+//Microprocessor: ATSAMD21G18
 //----------------------------------------------------------------------------------------------------------
 //Authors: Juan Pablo Forero (jpabloforcor@gmail.com) & Chamod Weerasinghe
 //----------------------------------------------------------------------------------------------------------
@@ -32,6 +32,7 @@
 //----------------------------------------------------------------------------------------------------------
 
 #include "Si1133.h"
+
 #include "../sercom_i2c.h"
 #define SI1133_I2C_ADDRESS (0xAA) /** Hardcoded address for Si1133 sensor */
 
@@ -162,7 +163,7 @@ uint32_t deinit (void);
 uint32_t measure (Samples_t *samples);
 int32_t  get_uv (int32_t uv);
 int32_t  get_lux (int32_t vis_high, int32_t vis_low, int32_t ir);
-uint32_t measure_lux_uv (float *lux, float *uvi);
+int8_t measure_lux_uv (float *lux, float *uvi);
 uint32_t get_measurement (float *lux, float *uvi);
 uint32_t get_hardware_id (uint8_t *hardware_id);
 
@@ -979,7 +980,7 @@ int32_t  get_lux (int32_t vis_high, int32_t vis_low, int32_t ir)
  * @return
  *    Returns zero on OK, non-zero otherwise
  ******************************************************************************/
-uint32_t  measure_lux_uv (float *lux, float *uvi)
+int8_t  measure_lux_uv (float *lux, float *uvi)
 {
     Samples_t samples;
     uint32_t retval;
@@ -1009,7 +1010,10 @@ uint32_t  measure_lux_uv (float *lux, float *uvi)
     *uvi = (float) get_uv(samples.ch0);
     *uvi = *uvi / (1 << UV_OUTPUT_FRACTION);
 
-    return retval;
+	if (retval)
+		return K_SENSOR_STATUS_UNKNOWN;
+	else
+		return K_SENSOR_OK;
 }
 
 /***************************************************************************//**

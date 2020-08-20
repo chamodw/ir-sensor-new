@@ -49,34 +49,6 @@ int main(void)
 	while((clock_getTicks()-tick)<100);
 	
 
-dev_led(1,1);	
-	while(1)
-	{
-		
-		
-	
-			
-			
-			//Si1133_motor();
-			
-			
-		//	if (Si1133_isReady())
-			{
-				dev_led(1, 0);
-				uint8_t data[8];
-				float uv, lux;
-				//Si1133_getResult(&uv,&lux);
-				measure_lux_uv(&lux, &uv);
-					dev_led(1,1);
-					//Si1133_getResult((float*)data, (float*)&data[4]);
-				usbserial_tx(data, 8);
-				 tick = clock_getTicks();
-				 while((clock_getTicks()-tick)<100);
-				 
-			}
-			
-		
-	}
 
 
 	uint32_t timestamp = clock_getTicks();
