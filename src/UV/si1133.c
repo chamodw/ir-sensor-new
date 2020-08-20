@@ -184,6 +184,13 @@ uint8_t Si1133_I2CWrite(uint8_t r, uint8_t data)
 	return SI1133_OK;
 }
 
+uint8_t Si1133_I2CRead(uint8_t r)
+{
+	uint8_t d = 0;
+	i2c_writeRead(SI1133_I2C_ADDRESS, &r, 1, &d, 1);
+	return d;
+}
+
 
 unsigned char   Si1133_isReady() {
                 return result_ready;
@@ -306,9 +313,13 @@ uint8_t  get_light_and_uv(float *light_level, float *uv_index)
  ******************************************************************************/
 uint32_t    read_register (enum  Register eRegister, uint8_t *data)  {
 
-			i2c_writeRead(SI1133_I2C_ADDRESS, &eRegister, 1, data, 1);
-           
+			unsigned char buf[1];
 
+			buf[0] = Si1133_I2CRead((uint8_t)eRegister);
+
+			*data = buf[0];
+
+			    
             return SI1133_OK;
 }
 
@@ -327,11 +338,12 @@ uint32_t    read_register (enum  Register eRegister, uint8_t *data)  {
  ******************************************************************************/
 uint32_t  write_register(enum  Register eRegister, uint8_t eData)
 {
+ if (Si1133_I2CWrite (eRegister, eData)) {
+	 //Return failure
+	 return SI1133_ERROR_I2C_TRANSACTION_FAILED;
+ }
 
-	uint8_t d[2] = {eRegister, eData};
-	i2c_write(SI1133_I2C_ADDRESS, d, 2);
-
-    return SI1133_OK;
+ return SI1133_OK;
 }
 
 /***************************************************************************//**
@@ -354,12 +366,18 @@ uint32_t  write_register_block(enum  Register eRegister, uint8_t length, uint8_t
 {
    
     
-    uint16_t i;
-    for (i = 0; i < length; i++) {
-        Si1133_I2CWrite((uint8_t)(eRegister + i), eData[i]);
-       
-    }
+      
+      uint16_t i;
+      for (i = 0; i < length; i++) {
+	      Si1133_I2CWrite((uint8_t)(eRegister + i), eData[i]);
+	      
+      }
 
+      return SI1133_OK;
+
+	//
+	//i2c_write(SI1133_I2C_ADDRESS, &eRegister, 1);
+	//i2c_write(SI1133_I2C_ADDRESS, eData, length);
     return SI1133_OK;
 }
 
@@ -380,14 +398,13 @@ uint32_t  write_register_block(enum  Register eRegister, uint8_t length, uint8_t
  *    Returns zero on OK, non-zero otherwise
  ******************************************************************************/
 uint32_t    read_register_block(enum  Register eRegister, uint8_t length, uint8_t *data) {
-    
-            uint16_t i;
-			
-			i2c_writeRead(SI1133_I2C_ADDRESS, &eRegister, 1, data, length);
-            
-           
+        uint16_t i;
+        
+        for (i = 0; i < length; i++) {
+	        data [i] = Si1133_I2CRead ((uint8_t)(eRegister + i));
+        }
 
-            return SI1133_OK;
+        return SI1133_OK;
     
 }
 
@@ -693,6 +710,9 @@ uint32_t  read_parameter (enum  Parameter address)
  *****************************************************************************/
 uint32_t  init_pvt (void)
 {
+	
+	
+
     uint32_t retval;
 
     /* Allow some time for the part to power up */
@@ -724,6 +744,8 @@ uint32_t  init_pvt (void)
 
     retval += write_register(REG_IRQ_ENABLE, 0x0f);
 
+
+	
     return retval;
 }
 

@@ -118,6 +118,14 @@ uint16_t sensor_read(int16_t* dest)
 		return 4;
 	else
 		return 0;
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_COLOUR
+	float uv, lux;
+	int8_t e = measure_lux_uv(&lux, &uv);
+	
+	if (e == K_SENSOR_OK)
+		return 4;
+	else
+		return 0;
 #else	
 	return 0; //No bytes written
 #endif
