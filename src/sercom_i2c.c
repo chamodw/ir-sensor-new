@@ -87,7 +87,7 @@ void i2c_init()
 	
 	PORT->Group[0].OUTSET.reg = (1 << 14) | (1 << 15);
 	
-	PORT->Group[0].PMUX[7].reg = PORT_PMUX_PMUXE_G | PORT_PMUX_PMUXO_C;
+	PORT->Group[0].PMUX[7].reg = PORT_PMUX_PMUXE_C | PORT_PMUX_PMUXO_C;
 
 	
 	

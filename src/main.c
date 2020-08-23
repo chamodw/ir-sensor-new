@@ -40,7 +40,7 @@ int main(void)
 	
 	while(1)
 	{
-		//i2c_scan();
+		i2c_scan();
 		uint32_t tick = clock_getTicks();
 		while((clock_getTicks()-tick)<100);
 		
