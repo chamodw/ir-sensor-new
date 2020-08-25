@@ -372,6 +372,14 @@
       <SubType>compile</SubType>
       <Link>USB\usb_standard.h</Link>
     </Compile>
+    <Compile Include="..\src\UV\si1133.c">
+      <SubType>compile</SubType>
+      <Link>UV\si1133.c</Link>
+    </Compile>
+    <Compile Include="..\src\UV\si1133.h">
+      <SubType>compile</SubType>
+      <Link>UV\si1133.h</Link>
+    </Compile>
     <Compile Include="Device_Startup\startup_samd21.c">
       <SubType>compile</SubType>
     </Compile>
@@ -383,6 +391,7 @@
     <Folder Include="Device_Startup\" />
     <Folder Include="Color" />
     <Folder Include="Conductivity" />
+    <Folder Include="UV" />
     <Folder Include="Sensirion" />
     <Folder Include="USB" />
     <Folder Include="USB\Class" />

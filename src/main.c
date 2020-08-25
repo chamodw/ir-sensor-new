@@ -36,10 +36,19 @@ int main(void)
 	
 	usbserial_init();
 
+	
 
 	 Kiw_DataPacket packet;
 	 
 	sensor_init(&packet);
+	
+	
+	
+	//Need to allow time for enumeration to complete
+	 tick = clock_getTicks();
+	while((clock_getTicks()-tick)<100);
+	
+
 
 
 	uint32_t timestamp = clock_getTicks();
