@@ -212,7 +212,7 @@ void i2c_writeRead(uint8_t addr,  const uint8_t* data, uint8_t n1, uint8_t* dest
 	}
 	
 	
-	i2c_status = ADDR_R;
+	i2c_status = DATA_R;
 	SERCOMX->I2CM.ADDR.bit.ADDR = addr+1;
 		
 	while(i2c_status != IDLE);
@@ -235,7 +235,7 @@ void i2c_read(uint8_t addr,  uint8_t* data, uint8_t n)
 	n_in = n;
 	idx_in = 0;
 	
-	i2c_status = ADDR_R;
+	i2c_status = DATA_R;
 	
 	SERCOMX->I2CM.ADDR.bit.ADDR = addr+1;
 	while(i2c_status != IDLE);
@@ -352,7 +352,7 @@ void SERCOM0_Handler()
 		switch(i2c_status)
 		{
 			case DATA_R:
-			if (status.bit.CLKHOLD)
+			if (!status.bit.RXNACK && status.bit.CLKHOLD)
 			{
 				if (idx_in < n_in)
 				{

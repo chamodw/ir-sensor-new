@@ -7,6 +7,7 @@
 
 
 #include "device.h"
+#include <string.h>
 
 void dev_led(uint8_t led, uint8_t status)
 {
