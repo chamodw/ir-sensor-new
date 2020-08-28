@@ -176,38 +176,38 @@ unsigned char result_ready = 0;
 float calc_uvi, calc_lux;
 
 
-//
-//uint8_t Si1133_I2CWrite(uint8_t r, uint8_t data)
-//{
-	//uint8_t d[2] = {r, data};
-	//i2c_write(SI1133_I2C_ADDRESS, d, 2);
-	//
-	//return 1;
-//}
-//
-//uint8_t Si1133_I2CRead(uint8_t r)
-//{
-	//uint8_t d = 0;
-	//i2c_writeRead(SI1133_I2C_ADDRESS, &r, 1, &d, 1);
-	//return d;
-//}
-//
-
 
 uint8_t Si1133_I2CWrite(uint8_t r, uint8_t data)
-{	
-				Si1133_wait_ms(2);
-	return I2CWrite( r, data);
+{
+	uint8_t d[2] = {r, data};
+	i2c_write(SI1133_I2C_ADDRESS, d, 2);
+	
+	return 1;
 }
 
 uint8_t Si1133_I2CRead(uint8_t r)
 {
 	uint8_t d = 0;
-				Si1133_wait_ms(2);
-	d = I2CRead(r );
-				Si1133_wait_ms(2);
+	i2c_writeRead(SI1133_I2C_ADDRESS, &r, 1, &d, 1);
 	return d;
 }
+////
+//
+//
+//uint8_t Si1133_I2CWrite(uint8_t r, uint8_t data)
+//{	
+				//Si1133_wait_ms(2);
+	//return I2CWrite( r, data);
+//}
+//
+//uint8_t Si1133_I2CRead(uint8_t r)
+//{
+	//uint8_t d = 0;
+				//Si1133_wait_ms(2);
+	//d = I2CRead(r );
+				//Si1133_wait_ms(2);
+	//return d;
+//}
 
 
 unsigned char   Si1133_isReady() {

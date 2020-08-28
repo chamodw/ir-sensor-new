@@ -24,7 +24,7 @@ int main(void)
 	dev_init(); //Initialize device
 	PORT->Group[0].DIRSET.reg = (3 << 22);
 	PORT->Group[0].PINCFG[22].bit.INEN = 1;
-	//i2c_init();
+	i2c_init();
 	
 #define NO_USB1
 
