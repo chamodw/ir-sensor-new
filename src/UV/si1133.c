@@ -1048,7 +1048,7 @@ int8_t  measure_lux_uv (float *lux, float *uvi)
     measure(&samples);
 
     /* Convert the readings to lux */
-	uint32_t int_lux = get_lux(samples.ch1, samples.ch3, samples.ch2);
+	int32_t int_lux = get_lux(samples.ch1, samples.ch3, samples.ch2);
     *lux = (float) int_lux;
     *lux = *lux / (1 << LUX_OUTPUT_FRACTION);
 	float dest_lux = *lux;
