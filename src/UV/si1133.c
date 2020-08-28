@@ -105,41 +105,41 @@ const  Coeff_t  uk[2] = {
 
 //0x55
 //0b01010101
-unsigned char    _A7 = 1;
-unsigned char    _A6 = 0;
-unsigned char    _A5 = 1;
-unsigned char    _A4 = 0;
-unsigned char    _A3 = 1;
-unsigned char    _A2 = 0;
-unsigned char    _A1 = 1;
-unsigned char    _A0 = 0;
-
-unsigned char    _REGA7;
-unsigned char    _REGA6;
-unsigned char    _REGA5;
-unsigned char    _REGA4;
-unsigned char    _REGA3;
-unsigned char    _REGA2;
-unsigned char    _REGA1;
-unsigned char    _REGA0;
-
-unsigned char    _MUX_REGA7;
-unsigned char    _MUX_REGA6;
-unsigned char    _MUX_REGA5;
-unsigned char    _MUX_REGA4;
-unsigned char    _MUX_REGA3;
-unsigned char    _MUX_REGA2;
-unsigned char    _MUX_REGA1;
-unsigned char    _MUX_REGA0;
-
-unsigned char    _D7;
-unsigned char    _D6;
-unsigned char    _D5;
-unsigned char    _D4;
-unsigned char    _D3;
-unsigned char    _D2;
-unsigned char    _D1;
-unsigned char    _D0;
+//unsigned char    _A7 = 1;
+//unsigned char    _A6 = 0;
+//unsigned char    _A5 = 1;
+//unsigned char    _A4 = 0;
+//unsigned char    _A3 = 1;
+//unsigned char    _A2 = 0;
+//unsigned char    _A1 = 1;
+//unsigned char    _A0 = 0;
+//
+//unsigned char    _REGA7;
+//unsigned char    _REGA6;
+//unsigned char    _REGA5;
+//unsigned char    _REGA4;
+//unsigned char    _REGA3;
+//unsigned char    _REGA2;
+//unsigned char    _REGA1;
+//unsigned char    _REGA0;
+//
+//unsigned char    _MUX_REGA7;
+//unsigned char    _MUX_REGA6;
+//unsigned char    _MUX_REGA5;
+//unsigned char    _MUX_REGA4;
+//unsigned char    _MUX_REGA3;
+//unsigned char    _MUX_REGA2;
+//unsigned char    _MUX_REGA1;
+//unsigned char    _MUX_REGA0;
+//
+//unsigned char    _D7;
+//unsigned char    _D6;
+//unsigned char    _D5;
+//unsigned char    _D4;
+//unsigned char    _D3;
+//unsigned char    _D2;
+//unsigned char    _D1;
+//unsigned char    _D0;
 
 //Private functions
 void            Si1133_wait_ms (unsigned long eWait);
@@ -176,19 +176,36 @@ unsigned char result_ready = 0;
 float calc_uvi, calc_lux;
 
 
+//
+//uint8_t Si1133_I2CWrite(uint8_t r, uint8_t data)
+//{
+	//uint8_t d[2] = {r, data};
+	//i2c_write(SI1133_I2C_ADDRESS, d, 2);
+	//
+	//return 1;
+//}
+//
+//uint8_t Si1133_I2CRead(uint8_t r)
+//{
+	//uint8_t d = 0;
+	//i2c_writeRead(SI1133_I2C_ADDRESS, &r, 1, &d, 1);
+	//return d;
+//}
+//
+
 
 uint8_t Si1133_I2CWrite(uint8_t r, uint8_t data)
-{
-	uint8_t d[2] = {r, data};
-	i2c_write(SI1133_I2C_ADDRESS, d, 2);
-	
-	return SI1133_OK;
+{	
+				Si1133_wait_ms(2);
+	return I2CWrite( r, data);
 }
 
 uint8_t Si1133_I2CRead(uint8_t r)
 {
 	uint8_t d = 0;
-	i2c_writeRead(SI1133_I2C_ADDRESS, &r, 1, &d, 1);
+				Si1133_wait_ms(2);
+	d = I2CRead(r );
+				Si1133_wait_ms(2);
 	return d;
 }
 
@@ -315,7 +332,7 @@ uint8_t  get_light_and_uv(float *light_level, float *uv_index)
 uint32_t    read_register (enum  Register eRegister, uint8_t *data)  {
 
 			unsigned char buf[1];
-
+			
 			buf[0] = Si1133_I2CRead((uint8_t)eRegister);
 
 			*data = buf[0];
@@ -398,12 +415,13 @@ uint32_t  write_register_block(enum  Register eRegister, uint8_t length, uint8_t
  * @return
  *    Returns zero on OK, non-zero otherwise
  ******************************************************************************/
-uint32_t    read_register_block(enum  Register eRegister, uint8_t length, uint8_t *data) {
+uint32_t	read_register_block(enum  Register eRegister, uint8_t length, uint8_t *data) {
         uint16_t i;
         
-        for (i = 0; i < length; i++) {
+       for (i = 0; i < length; i++) {
 	        data [i] = Si1133_I2CRead ((uint8_t)(eRegister + i));
         }
+	//  i2c_writeRead(SI1133_I2C_ADDRESS, &eRegister, 1, data, length);
 
         return SI1133_OK;
     
@@ -967,6 +985,33 @@ int32_t  get_lux (int32_t vis_high, int32_t vis_low, int32_t ir)
     return lux;
 }
 
+
+int32_t  measure_lux_uv_debug ()
+{
+	Samples_t samples;
+	uint32_t retval;
+	uint8_t response;
+
+	/* Force measurement */
+	retval = force_measurement();
+
+	/* Go to sleep while the sensor does the conversion */
+	Si1133_wait_ms (200);
+
+	/* Check if the measurement finished, if not then wait */
+	retval += read_register(REG_IRQ_STATUS, &response);
+	while ( response != 0x0F ) {
+		Si1133_wait_ms (5);
+		retval += read_register(REG_IRQ_STATUS, &response);
+	}
+
+	/* Get the results */
+	measure(&samples);
+
+	
+	
+	return get_lux(samples.ch1, samples.ch3, samples.ch2);
+}
 /***************************************************************************//**
  * @brief
  *    Measure lux and UV index using the Si1133 sensor
@@ -1003,9 +1048,10 @@ int8_t  measure_lux_uv (float *lux, float *uvi)
     measure(&samples);
 
     /* Convert the readings to lux */
-    *lux = (float) get_lux(samples.ch1, samples.ch3, samples.ch2);
+	uint32_t int_lux = get_lux(samples.ch1, samples.ch3, samples.ch2);
+    *lux = (float) int_lux;
     *lux = *lux / (1 << LUX_OUTPUT_FRACTION);
-
+	float dest_lux = *lux;
     /* Convert the readings to UV index */
     *uvi = (float) get_uv(samples.ch0);
     *uvi = *uvi / (1 << UV_OUTPUT_FRACTION);
