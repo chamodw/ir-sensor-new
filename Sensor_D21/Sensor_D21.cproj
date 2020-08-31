@@ -385,14 +385,6 @@
     <Compile Include="Device_Startup\system_samd21.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="UV\I2C.c">
-      <SubType>compile</SubType>
-      <Link>UV\I2C.c</Link>
-    </Compile>
-    <Compile Include="UV\I2C.h">
-      <SubType>compile</SubType>
-      <Link>UV\I2C.h</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Device_Startup\" />

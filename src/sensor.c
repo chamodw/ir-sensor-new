@@ -11,6 +11,7 @@
 #include "sam.h"
 #include "Color/color.h"
 #include "UV/si1133.h"
+#include <string.h>
 
 Kiw_DataPacket* g_packet;
 
@@ -129,7 +130,7 @@ uint16_t sensor_read(int16_t* dest)
 		return 8;
 	}
 	//else
-		return 0;
+		//return 0;
 #else	
 	return 0; //No bytes written
 #endif
