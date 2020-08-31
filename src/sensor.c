@@ -11,6 +11,7 @@
 #include "sam.h"
 #include "Color/color.h"
 #include "UV/si1133.h"
+#include <string.h>
 
 Kiw_DataPacket* g_packet;
 
@@ -121,15 +122,15 @@ uint16_t sensor_read(int16_t* dest)
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
 	float res[2]; //lux, uv
 	int8_t e = measure_lux_uv(&res[0], &res[1]);
-	if (e == K_SENSOR_OK)
+//	if (e == K_SENSOR_OK)
 	{
 			
 		memcpy(dest, res, sizeof(float)*2);
 
 		return 8;
 	}
-	else
-		return 0;
+	//else
+		//return 0;
 #else	
 	return 0; //No bytes written
 #endif
