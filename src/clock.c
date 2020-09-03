@@ -220,6 +220,22 @@ void clock_init()
 	GCLK->CLKCTRL.reg = gclk_clkctrladc.reg;
 	while(GCLK->STATUS.bit.SYNCBUSY);
 	
+	
+	
+	
+	// Connect GCLK_EIC to GCLK4 (1MHz)
+	GCLK_CLKCTRL_Type gclk_clkctrleic =
+	{
+		.bit.CLKEN = 1,
+		.bit.GEN = 4, //Use GCLK4
+		.bit.ID = GCLK_CLKCTRL_ID_EIC_Val, //GCLK_EIC
+		.bit.WRTLOCK = 0
+	};
+	GCLK->CLKCTRL.reg = gclk_clkctrleic.reg;
+	while(GCLK->STATUS.bit.SYNCBUSY);
+	
+	
+	
 	//Set CPU, APBx buses to 48MHz
 	PM->CPUSEL.reg = PM_CPUSEL_CPUDIV_DIV1;
 	PM->APBASEL.reg = PM_APBASEL_APBADIV_DIV1_Val;
@@ -255,3 +271,4 @@ void clock_delayMs(uint32_t delay_ms)
 	uint32_t t = clock_getTicks();
 	while((clock_getTicks()-t) < delay_ms);
 }
+

@@ -131,7 +131,7 @@ static const uint8_t pah8011_init_register_array[][2] = {
   { 0x75, 0x03 },
   //{ 0x24, 0x01 }, //update flag
 };
-/*
+
 static const uint8_t pah8011_touch_register_array[][2] = {
   { 0x7F, 0x05 }, //change to bank5
   { 0x44, 0x1F },
@@ -148,7 +148,7 @@ static const uint8_t pah8011_touch_register_array[][2] = {
   { 0x4C, 0x80 },
   { 0x4D, 0x02 },
 };
-*/
+
 static const uint8_t pah8011_ppg_20hz_register_array[][2] = {
   { 0x7F, 0x05 }, //change to bank5
   { 0x44, 0x1F },

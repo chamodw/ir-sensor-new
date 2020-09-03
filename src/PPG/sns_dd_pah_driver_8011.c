@@ -251,12 +251,12 @@ bool pah_enter_mode(pah_mode mode)
 
   switch (mode)
   {
-	  /*
+	  
   case pah_touch_mode:
     if (!pah_run_device(pah_device_touch, true))
       goto FAIL;
     break;
-*/
+
 	  
 	  
   case pah_ppg_mode:
@@ -264,7 +264,7 @@ bool pah_enter_mode(pah_mode mode)
     if (!pah_run_device(pah_device_ppg, true))
       goto FAIL;
     break;
-/*
+
   case pah_ppg_touch_mode:
   case pah_ppg_200hz_touch_mode:
     if (!pah_run_device(pah_device_ppg, true))
@@ -272,7 +272,7 @@ bool pah_enter_mode(pah_mode mode)
     if (!pah_run_device(pah_device_touch, true))
       goto FAIL;
     break;
-*/
+
   default:
     break;
   }
@@ -495,6 +495,23 @@ bool pah_is_ppg_20hz_mode(void)
     || g_state.mode == pah_ppg_touch_mode;
 }
 
+pah_ret clear_irq(uint8_t int_req)
+{
+	pah_ret result = pah_success;
+	if (!pah_comm_write(0x7F, 0x02))    //Bank 2
+	{
+		debug_printf("pah_task(). clear int_req fail a\n");
+		result = pah_err_comm_fail;
+		
+	}
+	if (!pah_comm_write(0x1b, int_req)) //clear interrupt
+	{
+		debug_printf("pah_task(). clear int_req fail b\n");
+		result = pah_err_comm_fail;
+		
+	}
+	return result;
+}
 pah_ret pah_task(void)
 {
   pah_ret result = pah_err_unknown;
@@ -539,7 +556,7 @@ pah_ret pah_task(void)
       
       debug_printf("pah_task(). fifo overflow \n");
       result = pah_err_fifo_overflow;
-      goto FAIL;
+    //  goto FAIL;
     }
 
     // underflow interrupt
@@ -639,7 +656,7 @@ pah_ret pah_task(void)
         }
         else
         {
-          if (_pah8011_cks(g_state.fifo_data, samples_per_read, *(uint32_t *)cks))
+          if (1)//_pah8011_cks(g_state.fifo_data, samples_per_read, *(uint32_t *)cks))
           {
             // report fifo
             if (g_state.fp_report_fifo_handler)
@@ -701,9 +718,14 @@ pah_ret pah_task(void)
   return result;
 
 FAIL:
+	result = 	clear_irq(int_req);
+
   debug_printf_1("pah_task(). fail, result = %d \n", result);
   return result;
 }
+
+
+
 
 uint8_t* pah_get_fifo_data(void)
 {

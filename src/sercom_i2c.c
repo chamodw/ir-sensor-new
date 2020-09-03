@@ -35,22 +35,20 @@ static volatile uint8_t slave_ack; //set if a slave nacks
 
 void i2c_init()
 {
-	
-
-#ifdef K_SAMD21_
-
-	//Sending 9 pulses on SCL will reset any slave
-	uint8_t i= 9;
+		//Sending 9 pulses on SCL will reset any slave
+	uint8_t i = 18;
 	
 	PORT->Group[0].OUTCLR.reg = 1 << 23;
 	PORT->Group[0].DIRSET.reg = 1 << 23;
 	while(i--)
 	{
 		uint32_t t = clock_getTicks();
-		while((clock_getTicks()-t) < 10);
+		while((clock_getTicks()-t) < 5);
 		PORT->Group[0].DIRTGL.reg = 1 << 23;
 	}
 	
+
+#ifdef K_SAMD21_
 	PM->APBCMASK.bit.SERCOM3_ = 1;		//Enable APB Clock for SERCOM3
 	
 	//Set PINMUX to connect SERCOM to the I2C Pins
@@ -61,34 +59,19 @@ void i2c_init()
 	
 	
 #else
-
-
-	//Sending 9 pulses on SCL will reset any slave
-	uint8_t i= 9;
-
-	PORT->Group[0].OUTCLR.reg = 1 << 15;
-	PORT->Group[0].DIRSET.reg = 1 << 15;
-	while(i--)
-	{
-		uint32_t t = clock_getTicks();
-		while((clock_getTicks()-t) < 10);
-		PORT->Group[0].DIRTGL.reg = (1 << 15);
-	}
-
-
-	PM->APBCMASK.bit.SERCOM0_ = 1;		//Enable APB Clock for SERCOM0
-
-
+	PM->APBCMASK.bit.SERCOM0_ = 1;		//Enable APB Clock for SERCOM30
+	
+	
 	PORT->Group[0].PINCFG[14].bit.PMUXEN = 1;
 	PORT->Group[0].PINCFG[15].bit.PMUXEN = 1;
-
+	
 	PORT->Group[0].PINCFG[14].bit.PULLEN = 1;
 	PORT->Group[0].PINCFG[15].bit.PULLEN = 1;
 	
 	PORT->Group[0].OUTSET.reg = (1 << 14) | (1 << 15);
 	
 	PORT->Group[0].PMUX[7].reg = PORT_PMUX_PMUXE_C | PORT_PMUX_PMUXO_C;
-
+	
 	
 	
 #endif
@@ -149,6 +132,37 @@ uint8_t i2c_testAddr(uint8_t addr)
 	while(i2c_getStatus() != IDLE);
 	
 	return slave_ack;
+}
+
+
+void i2c_writeRegBlock(uint8_t addr, uint8_t r, uint8_t* data, uint8_t n)
+{
+	rs = 0; // Don't need repeat start
+	
+	
+	while(i2c_status != IDLE);
+	
+	
+	//Force bus state to idle from unknown
+	if (SERCOMX->I2CM.STATUS.bit.BUSSTATE == 0)
+	SERCOMX->I2CM.STATUS.reg = 1 << SERCOM_I2CM_STATUS_BUSSTATE_Pos;
+	while(SERCOMX->I2CM.SYNCBUSY.bit.SYSOP);
+	
+	buffer_out[0] = r;
+	
+	//Copy data to local buffer
+	uint8_t i = 0;
+	for(i =0; i < n; i++)
+	buffer_out[i+1] = data[i] ;
+	
+	i2c_status = ADDR_W;
+	idx_out = 0;
+	n_out = n+1;
+	
+	//Start Transmission
+	SERCOMX->I2CM.ADDR.bit.ADDR = addr;
+	
+	while(i2c_status != IDLE);
 }
 
 void i2c_write(uint8_t addr,  const uint8_t* data, uint8_t n)
@@ -235,7 +249,7 @@ void i2c_read(uint8_t addr,  uint8_t* data, uint8_t n)
 	n_in = n;
 	idx_in = 0;
 	
-	i2c_status = DATA_R;
+	i2c_status = ADDR_R;
 	
 	SERCOMX->I2CM.ADDR.bit.ADDR = addr+1;
 	while(i2c_status != IDLE);
@@ -352,7 +366,7 @@ void SERCOM0_Handler()
 		switch(i2c_status)
 		{
 			case DATA_R:
-			if (!status.bit.RXNACK && status.bit.CLKHOLD)
+			if (status.bit.CLKHOLD)
 			{
 				if (idx_in < n_in)
 				{
@@ -373,20 +387,28 @@ void SERCOM0_Handler()
 					}
 					
 				}
+				else
+					i2c_status = IDLE; //IS THIS OK???
 				
 			}
 			break;
 			case ADDR_R:
 			if (!status.bit.RXNACK && status.bit.CLKHOLD)
 			{
-				i2c_status = DATA_R;
-				if (idx_in < n_in)
+				
+				if (idx_in < n_in - 1)
 				{
 
 					buffer_in[idx_in] = SERCOMX->I2CM.DATA.bit.DATA;
 					i2c_cmd(1, 2); //ack, read
 					idx_in++;
 					i2c_status = DATA_R;
+				}
+				else //No more data to read
+				{
+					buffer_in[idx_in] = SERCOMX->I2CM.DATA.bit.DATA;
+					i2c_cmd(0, 3); //nack, stop
+					i2c_status = IDLE;
 				}
 				
 			}

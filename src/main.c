@@ -15,7 +15,30 @@
 #include "USB/usb_lib.h"
 #include "USB/usbserial.h"
 #include "clock.h"
-#include "C:\Users\csam754\Documents\Projects\Kiwrious\Firmware\Kiwrious-Sensor\Sensor_D11\PPG\sns_dd_pah_driver.h"
+#include "C:\Users\csam754\Documents\Projects\Kiwrious\Firmware\Kiwrious-Sensor\src\PPG\sns_dd_pah_driver.h"
+#include <stdbool.h>
+
+
+volatile bool pah_int = false;
+
+	uint32_t data[40];
+	bool newdata = false;
+	char str[100] = {0};
+		uint32_t sample_num = 40;
+void fifo_handler(void* p, pah_report_fifo* fifo)
+{
+
+
+		dev_led(1, 1);
+	for (int i = 0; i < sample_num; i++)
+	{
+		data[i] = *(uint32_t*)(fifo->data + i*4);
+	}
+			newdata = true;
+
+	dev_led(1, 0);
+}
+
 
 int main(void)
 {
@@ -26,41 +49,75 @@ int main(void)
 	
 
 	//
-	//usb_init();
-	//usb_attach();
+	usb_init();
+	usb_attach();
 	//
 	//Need to allow time for enumeration to complete
 	uint32_t tick = clock_getTicks();
 	while((clock_getTicks()-tick)<100);
 	
-	//usbserial_init();
+	usbserial_init();
 
 
 	i2c_init();
 
 
-
 	PORT->Group[0].DIRCLR.reg = 1 << 22;
-	
-	
+	PORT->Group[0].PINCFG[22].reg = PORT_PINCFG_INEN | PORT_PINCFG_PMUXEN;
+	PORT->Group[0].PMUX[11].bit.PMUXE = PORT_PMUX_PMUXE_A_Val;
 	PM->APBAMASK.bit.EIC_ = 1;
 	
-	EIC->CONFIG[0].bit.SENSE6 = EIC_CONFIG_SENSE6_HIGH_Val;
+	EIC->CONFIG[0].bit.SENSE6 = EIC_CONFIG_SENSE6_RISE_Val;
 	EIC->INTENSET.bit.EXTINT6 = 1;
 	EIC->CTRL.bit.ENABLE = 1;
+	while(EIC->STATUS.bit.SYNCBUSY);
 	
-
+	NVIC_EnableIRQ(EIC_IRQn);
+	NVIC_SetPriority(EIC_IRQn, 10);
 	pah_init();
 	
 	
 	pah_enter_mode(pah_ppg_mode);
 	
+	pah_set_report_fifo_callback(&fifo_handler, 0);
+
+	pah_ret result = 0;
+	pah_task();
 	while(1)
 	{
-		
-	//	i2c_scan();
+	
+		if(pah_int)
+		{
+			result = pah_task();
+			pah_int = false;
+			
+		}
+	//	continue;
+
+		if(newdata)
+		{
+			dev_led(1, 1);
+			for(int j = 0; j < sample_num; j+=2)
+			{
+				uint32_t i = j;
+				if (i >= sample_num)
+					 continue;
+				uint32_t x = data[i];
+				
+				snprintf(str, sizeof(str), "%u\n", data[i+1]);
+				
+				usbserial_tx(str, strlen(str));
+				
+				clock_delayMs(5);
+				
+			}
+			dev_led(1, 1);
+			newdata = false;
+		}
+//
+		//
 	}
-	;	
+	
 
 	Kiw_DataPacket packet;
 	 
@@ -99,9 +156,11 @@ void HardFault_Handler(){
 	
 void EIC_Handler()
 {
-	if (PORT->Group[0].IN.reg & (1 << 22))
+	//if (PORT->Group[0].IN.reg & (1 << 22))
 	{
-		PORT->Group[LED_PORT].OUTSET.reg = 1 <<LED0_PIN;
+		PORT->Group[LED_PORT].OUTTGL.reg = 1 <<LED0_PIN;
+		pah_int = true;
+		
 	//	pah8002_intr_isr();
 		EIC->INTFLAG.bit.EXTINT6 = 1;
 	}
