@@ -13,11 +13,12 @@
 //LED illumination for RGB Sensor
 void veml_lights(uint8_t l)
 {
+	/*
 	if (l)
 	PORT->Group[0].OUTSET.reg = (1 << 16) | (1 << 17) | (1 << 18);
 	else
 	PORT->Group[0].OUTCLR.reg = (1 << 16) | (1 << 17) | (1 << 18);
-	
+	*/
 }
 
 
