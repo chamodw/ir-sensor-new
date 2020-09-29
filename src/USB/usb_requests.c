@@ -1,12 +1,13 @@
 #include "usb_lib.h"
 #include "class/dfu.h"
+#include "msft_20.h"
 USB_SetupPacket usb_setup;
 __attribute__((__aligned__(4))) uint8_t ep0_buf_in[USB_EP0_SIZE];
 __attribute__((__aligned__(4))) uint8_t ep0_buf_out[USB_EP0_SIZE];
 volatile uint8_t usb_configuration;
 
 uint16_t usb_ep0_in_size;
-const uint8_t* usb_ep0_in_ptr;
+ uint8_t* usb_ep0_in_ptr;
 
 void usb_ep0_in_multi(void) {
 	uint16_t tsize = usb_ep0_in_size;
@@ -219,9 +220,10 @@ void usb_handle_setup(void){
 	}
 	else if (((usb_setup.bmRequestType & USB_REQTYPE_TYPE_MASK) == USB_REQTYPE_VENDOR))
 	{
-		if (usb_setup.wIndex == 0x0004)
+		if (usb_setup.wIndex == 0x0007 && usb_setup.bRequest == MS_VENDOR_CODE)
 		{
-			return usb_handle_msft_compatible(&msft_compID);
+			
+			return usb_handle_msft20();
 		}
 		else
 		
@@ -249,9 +251,43 @@ void usb_handle_control_in_complete(void) {
 				usb_ep0_in_multi();
 				return;
 		}
-	} else {
+	}
+	else if ((usb_setup.bmRequestType & USB_REQTYPE_TYPE_MASK) == USB_REQTYPE_VENDOR)
+	{
+		if (usb_setup.wIndex == 0x07) //MSFT20 request, uses a multi transfer
+		{
+			usb_ep0_in_multi();
+		}
+	}
+	 else {
 		usb_cb_control_in_completion();
 	}
+}
+
+void usb_handle_msft20()
+{
+	uint8_t* desc = 0;
+	uint16_t size = msft_getDescSet(&desc);
+	uint16_t len = usb_setup.wLength;
+	if (len > size) {
+		len = size;
+	}
+	if (len < USB_EP0_SIZE) {
+			memcpy(ep0_buf_in, desc, len);
+			usb_ep_start_in(0x80, ep0_buf_in, len, true);
+			
+	}else
+	{
+			usb_ep0_in_size = len;
+			usb_ep0_in_ptr = desc;
+			usb_ep0_in_multi();
+	}
+	
+	
+	
+
+	
+return usb_ep0_out();
 }
 
 void usb_handle_msft_compatible(const USB_MicrosoftCompatibleDescriptor* msft_compatible) {

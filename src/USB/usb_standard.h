@@ -70,6 +70,8 @@ enum {
 	USB_DTYPE_InterfaceAssociation = 0x0B,
 	USB_DTYPE_CSInterface = 0x24,
 	USB_DTYPE_CSEndpoint = 0x25,
+	USB_DTYPE_DeviceCapability = 0x10,
+	USB_DTYPE_BOS = 0x0f
 } USB_dtype;
 
 typedef enum {
@@ -109,6 +111,9 @@ typedef enum {
 #define USB_EP_TYPE_ISOCHRONOUS 0x01
 #define USB_EP_TYPE_BULK 0x02
 #define USB_EP_TYPE_INTERRUPT 0x03
+
+
+
 
 typedef struct {
 	uint8_t bLength; 
@@ -217,3 +222,34 @@ typedef struct {
 	uint16_t wTransferSize;
 	uint16_t bcdDFUVersion;
 } __attribute__((packed)) USB_DFUFunctionalDescriptor;
+
+
+
+typedef struct {
+	uint8_t bLength;
+	uint8_t bDescriptorType;
+	uint16_t wTotalLength;
+	uint8_t bNumDeviceCaps;
+	} __attribute__ ((packed)) USB_BOSHeaderDescriptor;
+	
+	
+typedef struct {
+	uint8_t bLength;
+	uint8_t bDescriptorType; //Must be set to DEVICE_CAPABILITY_DESCRIPTOR
+	uint8_t bDevCapabilityType; // Must be set to CAPABILITY_PLATFORM
+	uint8_t bReserved;
+	uint8_t uuid[16]; //D8DD60DF-4589-4CC7-9CD2-659D9E648A9F
+	}__attribute__ ((packed)) USB_MSFTPlatformCapabilityDescriptor;
+	
+	
+	
+typedef struct {
+		uint8_t bLength;
+		uint8_t bDescriptorType; //Must be set to DEVICE_CAPABILITY_DESCRIPTOR
+		uint8_t bDevCapabilityType; // Must be set to CAPABILITY_PLATFORM (0x05)
+		uint8_t bReserved;
+		uint8_t uuid[16]; //
+		uint16_t bcdVersion;
+		uint8_t bVendorCode;
+		uint8_t iLandingPage;
+	}__attribute__ ((packed)) USB_WEBUSBPlatformCapabilityDescriptor;

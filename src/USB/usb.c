@@ -13,6 +13,7 @@
 #include "usbserial.h"
 #include "../sensor.h"
 #include "class/cdc_standard.h"
+#include "msft_20.h"
 
 USB_ENDPOINTS(3);
 __attribute__((__aligned__(4))) uint8_t ep0_buffer[146];
@@ -21,7 +22,7 @@ __attribute__((__aligned__(4))) const USB_DeviceDescriptor device_descriptor = {
 	.bLength = sizeof(USB_DeviceDescriptor),
 	.bDescriptorType = USB_DTYPE_Device,
 
-	.bcdUSB                 = 0x0200,
+	.bcdUSB                 = 0x0210,
 	.bDeviceClass           = 0xEF,
 	.bDeviceSubClass        = 0x02,
 	.bDeviceProtocol        = 0x01,
@@ -29,7 +30,7 @@ __attribute__((__aligned__(4))) const USB_DeviceDescriptor device_descriptor = {
 	.bMaxPacketSize0        = 64,
 	.idVendor               = 0x04D8,
 	.idProduct              = 0xEC19,
-	.bcdDevice              = 0x0115,
+	.bcdDevice              = 0x0117,
 
 	.iManufacturer          = 0x01,
 	.iProduct               = 0x02,
@@ -202,6 +203,61 @@ __attribute__((__aligned__(4))) const USB_StringDescriptor language_string = {
 	.bDescriptorType = USB_DTYPE_String,
 	.bString = {USB_LANGUAGE_EN_US},
 };
+
+
+
+typedef struct Bos {
+	USB_BOSHeaderDescriptor bos_header;
+	
+	USB_WEBUSBPlatformCapabilityDescriptor webusb_caps;
+	
+	USB_MSFTPlatformCapabilityDescriptor msft_capability_header;
+	
+	USB_MSFTDescriptorSetInfo msft_descriptor_set_info;
+	
+}  __attribute__((packed)) Bos;
+
+__attribute__((__aligned__(4)))  const Bos bos_descriptor =
+{
+	.bos_header = {
+		.bLength = sizeof(USB_BOSHeaderDescriptor),
+		.bDescriptorType = USB_DTYPE_BOS,
+		.wTotalLength = sizeof(Bos),
+		.bNumDeviceCaps = 2
+	},
+	.webusb_caps = {
+		.bLength = sizeof(USB_WEBUSBPlatformCapabilityDescriptor),
+		.bDescriptorType = USB_DTYPE_DeviceCapability,
+		.bDevCapabilityType = 0x05, //Platform,
+		.bReserved = 0,
+		.uuid = {0x38, 0xB6, 0x08, 0x34, 0xA9, 0x09, 0xA0, 0x47, 
+			0x8B, 0xFD, 0xA0,0x76, 0x88, 0x15, 0xB6, 0x65},
+		.bcdVersion = 0x0100,
+		.bVendorCode = WEBUSB_VENDOR_CODE,
+		.iLandingPage = 0
+	},
+	
+	.msft_capability_header = {
+		.bLength = sizeof(USB_MSFTPlatformCapabilityDescriptor) +
+		sizeof(USB_MSFTDescriptorSetInfo),
+		.bDescriptorType = USB_DTYPE_DeviceCapability,
+		.bDevCapabilityType = 0x05, //Platform
+		.bReserved = 0,
+		.uuid = {0xDF, 0x60, 0xDD, 0xD8, 0x89, 0x45, 0xC7, 0x4C,
+		0x9C, 0xD2, 0x65, 0x9D, 0x9E, 0x64, 0x8A, 0x9F} //Microsoft GUID
+	},
+	.msft_descriptor_set_info =
+	{
+		.dwWindowsVersion = 0x06030000, //
+		.wMSOSescriptorSetTotalLength = sizeof(MSFTDesc),
+		.bMSVendorCode = MS_VENDOR_CODE,
+		.bAltEnumCode = 0
+	}
+};
+
+
+
+
 /*
 #define MSFT_ID 0xEE
 #define MSFT_ID_STR u"\xEE"
@@ -280,6 +336,10 @@ uint16_t usb_cb_get_descriptor(uint8_t type, uint8_t index, const uint8_t** ptr)
 		address = &configuration_descriptor;
 		size    = sizeof(ConfigDesc);
 		break;
+		case USB_DTYPE_BOS:
+		address = &bos_descriptor;
+		size = sizeof(bos_descriptor);
+		break;
 		case USB_DTYPE_String:
 		switch (index) {
 			case 0x00:
@@ -297,13 +357,13 @@ uint16_t usb_cb_get_descriptor(uint8_t type, uint8_t index, const uint8_t** ptr)
 			case 0x04:
 			address = usb_string_to_descriptor("Kiwrious DFU");
 			break;
-			case 0xee:
-			*ptr = msft_str;
-			size = sizeof(msft_str);
-			return size;
-			
-			break;
-			
+			//case 0xee:
+			//*ptr = msft_str;
+			//size = sizeof(msft_str);
+			//return size;
+			//
+			//break;
+			//
 			default: //requesting invalid descriptor
 			*ptr = 0;
 			return 0;
