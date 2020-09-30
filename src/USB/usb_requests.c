@@ -214,16 +214,42 @@ void usb_handle_setup(void){
 				return usb_ep0_stall();
 			break;
 			
+		
+			
 		}
 
 
 	}
 	else if (((usb_setup.bmRequestType & USB_REQTYPE_TYPE_MASK) == USB_REQTYPE_VENDOR))
 	{
-		if (usb_setup.wIndex == 0x0007 && usb_setup.bRequest == MS_VENDOR_CODE)
+		if ( usb_setup.bRequest == MS_VENDOR_CODE && usb_setup.wIndex == 0x0007)
 		{
-			
 			return usb_handle_msft20();
+		}
+		else if ((usb_setup.bRequest == WEBUSB_VENDOR_CODE) && (usb_setup.wIndex == 0x02))
+		{
+			if (usb_setup.wValue == 1) //iLandingPage = 1 in WEBUSBCapabilityDesc
+			{
+					
+				uint8_t* desc = 0;
+				uint16_t size = webusb_getUrl(&desc);
+				if (size > usb_setup.wLength)
+					size = usb_setup.wLength;
+				if(size > USB_EP0_SIZE)
+					size = USB_EP0_SIZE;
+				uint16_t i;
+				for(i = 0; i < size; i++)
+				{
+					ep0_buf_in[i] = *desc;
+					desc++;
+				
+				}
+				usb_ep0_in(size);
+				return usb_ep0_out();
+
+			}
+			else
+				usb_ep0_stall();
 		}
 		else
 		
@@ -289,7 +315,7 @@ void usb_handle_msft20()
 	
 return usb_ep0_out();
 }
-
+/*
 void usb_handle_msft_compatible(const USB_MicrosoftCompatibleDescriptor* msft_compatible) {
 	if (usb_setup.wIndex == 0x0004) {
 		uint16_t len = usb_setup.wLength;
@@ -305,7 +331,7 @@ void usb_handle_msft_compatible(const USB_MicrosoftCompatibleDescriptor* msft_co
 	} else {
 		return usb_ep0_stall();
 	}
-}
+}*/
 
 void* usb_string_to_descriptor( char* str) {
 	USB_StringDescriptor* desc = (((USB_StringDescriptor*)ep0_buf_in));
@@ -319,3 +345,5 @@ void* usb_string_to_descriptor( char* str) {
 	}
 	return desc;
 }
+
+

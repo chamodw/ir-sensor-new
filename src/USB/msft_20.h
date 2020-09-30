@@ -20,6 +20,13 @@
 
 #define MS_VENDOR_CODE 0x12 //Vendor defined code used to retrieve the MS descriptorset
 #define WEBUSB_VENDOR_CODE 0x13
+
+
+//Function Declarations
+uint16_t msft_getDescSet(uint8_t** p);
+
+
+//Data structure declarations
 typedef struct
 {
 	uint16_t wLength; //10

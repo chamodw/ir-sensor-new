@@ -253,3 +253,14 @@ typedef struct {
 		uint8_t bVendorCode;
 		uint8_t iLandingPage;
 	}__attribute__ ((packed)) USB_WEBUSBPlatformCapabilityDescriptor;
+	
+	
+/*
+WEBUSB Specific URL Descriptor 
+*/	
+typedef struct {
+	uint8_t bLength;
+	uint8_t bDescriptorType;
+	uint8_t bScheme;
+	uint8_t url[];
+	}__attribute__((packed)) USB_WEBUSBURLDescriptor;
