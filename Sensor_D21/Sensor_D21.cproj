@@ -335,6 +335,14 @@
       <SubType>compile</SubType>
       <Link>USB\Class\dfu.h</Link>
     </Compile>
+    <Compile Include="..\src\USB\msft_20.c">
+      <SubType>compile</SubType>
+      <Link>USB\msft_20.c</Link>
+    </Compile>
+    <Compile Include="..\src\USB\msft_20.h">
+      <SubType>compile</SubType>
+      <Link>USB\msft_20.h</Link>
+    </Compile>
     <Compile Include="..\src\USB\usb.c">
       <SubType>compile</SubType>
       <Link>USB\usb.c</Link>
