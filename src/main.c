@@ -63,6 +63,7 @@ int main(void)
 	
 		
 		uint16_t count = sensor_read(packet.data);
+
 		packet.len = count;
 		packet.seq ++;
 
@@ -70,6 +71,8 @@ int main(void)
 		while((clock_getTicks()-timestamp) < 100);
 		timestamp = clock_getTicks();
 	//	dev_led(1, 0);
+			usbserial_tx(packet.data, 2);
+			continue;
 		usbserial_tx((uint8_t*)&packet, sizeof(packet));
 		
 		//usbserial_tx((uint8_t*)&d, 4);

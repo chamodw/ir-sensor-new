@@ -21,7 +21,7 @@ static uint32_t g_range;
 //static uint32_t range_lower_end[] = {0, 405, 405, 0};
 //static uint32_t range_upper_end[] = {0, 3723, 3723, 3723};
 	
-const float diode_compensation =  0.1; //compensation for the 100mV drop of the schottkey diode
+const float diode_compensation =  0.0; //compensation for the 100mV drop of the schottkey diode
 
 uint8_t cdt_init()
 {
@@ -204,13 +204,13 @@ int16_t cdt_readAuto(int16_t* value, int16_t* range, int16_t* debug_buffer)
 	uint32_t t ;
 	uint16_t adc_values[3];
 	
-	for(int i = 1; i <= 3;i++)
+	for(int i = 1; i <= 1;i++)
 	{
 		cdt_setRangeResistance(i);
 		
 		t = clock_getTicks();
 		while((clock_getTicks()-t) < 10);
-		
+		uint16_t  discard = cdt_readADC();
 		adc_values[i-1] = cdt_readADC();
 		
 	}
