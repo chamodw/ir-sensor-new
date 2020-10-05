@@ -118,6 +118,8 @@
     <ListValues>
       <Value>DEBUG</Value>
       <Value>K_SAMD21_</Value>
+      <Value>VERSION_BUILD_MACHINE=\"%24(shell whoami)\"</Value>
+      <Value>VERSION_BUILD_NUMBER=\"%24(shell git describe --abbrev=0)\"</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.IncludePaths>
@@ -159,7 +161,7 @@
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
 </ArmGcc>
     </ToolchainSettings>
-    <PostBuildEvent>ubuntu.exe run /mnt/c/Users/csam754/Documents/Projects/Kiwrious/Firmware/Bootloader/DFU/dx1elf2dfu $(OutputFileName).elf "../../DFU-Files/$(OutputFileName).dfu"
+    <PostBuildEvent>ubuntu.exe run /mnt/c/Users/csam754/Documents/Projects/Kiwrious/Firmware/Bootloader/DFU/dx1elf2dfu $(OutputFileName).elf "../../DFU-Files/D21_$([System.DateTime]::Now.toString("dd-MM-yyyy")).dfu"
 </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
