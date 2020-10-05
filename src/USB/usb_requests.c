@@ -192,6 +192,7 @@ void usb_handle_setup(void){
 				else if (usb_setup.bRequest == CDC_SET_CONTROL_LINE_STATE)
 				{
 					_usbLineInfo.lineState = usb_setup.wValue&0xff;
+					usbserial_cb_linestate(_usbLineInfo.lineState);
 					usb_ep0_in(0);
 					return usb_ep0_out();
 				}
