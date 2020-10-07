@@ -10,7 +10,8 @@
 #include "Sensirion/sensirion_sensors.h"
 #include "sam.h"
 #include "Color/color.h"
-
+#include "UV/si1133.h"
+#include <string.h>
 
 Kiw_DataPacket* g_packet;
 
@@ -22,6 +23,7 @@ Kiw_DataPacket* g_packet;
 uint8_t sensor_init(Kiw_DataPacket* packet)
 {
 	g_packet = packet;
+	g_packet->type = (K_PKT_TYPE_DATA << 8) | (KIW_SENSOR_TYPE );
 	g_packet->header = 0x0A0A;
 	g_packet->footer = 0x0B0B;
 	g_packet->seq = 0;
@@ -37,6 +39,8 @@ uint8_t sensor_init(Kiw_DataPacket* packet)
 	e = tvoc_init();
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_COLOUR
 	e = veml_init();
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
+	e = Si1133_init();
 #endif
 
 
@@ -59,6 +63,8 @@ const char* sensor_name()
 	const char* s =  "Kiwrious VOC Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_COLOUR
 	const char* s =  "Kiwrious Colour Sensor";
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
+const char* s =  "Kiwrious UV Sensor";
 	#else
 	const char* s = "Kiwrious Sensor";
 #endif
@@ -113,6 +119,18 @@ uint16_t sensor_read(int16_t* dest)
 		return 4;
 	else
 		return 0;
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
+	float res[2]; //lux, uv
+	int8_t e = measure_lux_uv(&res[0], &res[1]);
+//	if (e == K_SENSOR_OK)
+	{
+			
+		memcpy(dest, res, sizeof(float)*2);
+
+		return 8;
+	}
+	//else
+		//return 0;
 #else	
 	return 0; //No bytes written
 #endif

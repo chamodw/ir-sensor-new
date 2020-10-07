@@ -13,6 +13,7 @@
 #include "usbserial.h"
 #include "../sensor.h"
 #include "class/cdc_standard.h"
+#include "msft_20.h"
 
 USB_ENDPOINTS(3);
 __attribute__((__aligned__(4))) uint8_t ep0_buffer[146];
@@ -21,7 +22,7 @@ __attribute__((__aligned__(4))) const USB_DeviceDescriptor device_descriptor = {
 	.bLength = sizeof(USB_DeviceDescriptor),
 	.bDescriptorType = USB_DTYPE_Device,
 
-	.bcdUSB                 = 0x0200,
+	.bcdUSB                 = 0x0210,
 	.bDeviceClass           = 0xEF,
 	.bDeviceSubClass        = 0x02,
 	.bDeviceProtocol        = 0x01,
@@ -29,7 +30,7 @@ __attribute__((__aligned__(4))) const USB_DeviceDescriptor device_descriptor = {
 	.bMaxPacketSize0        = 64,
 	.idVendor               = 0x04D8,
 	.idProduct              = 0xEC19,
-	.bcdDevice              = 0x0115,
+	.bcdDevice              = 0x0117,
 
 	.iManufacturer          = 0x01,
 	.iProduct               = 0x02,
@@ -202,71 +203,66 @@ __attribute__((__aligned__(4))) const USB_StringDescriptor language_string = {
 	.bDescriptorType = USB_DTYPE_String,
 	.bString = {USB_LANGUAGE_EN_US},
 };
-/*
-#define MSFT_ID 0xEE
-#define MSFT_ID_STR u"\xEE"
 
-__attribute__((__aligned__(4))) const USB_StringDescriptor msft_os = {
-	.bLength = 18,
-	.bDescriptorType = USB_DTYPE_String,
-	.bString = u"MSFT100" MSFT_ID_STR
-};
-*/
-/*
-// TODO: this doesn't need to be in RAM if it is copied into usb_ep0_out one packet at a time
-const USB_MicrosoftCompatibleDescriptor msft_compatible = {
-	.dwLength = sizeof(USB_MicrosoftCompatibleDescriptor) + (3 * sizeof(USB_MicrosoftCompatibleDescriptor_Interface)),
-	.bcdVersion = 0x0100,
-	.wIndex = 0x0004,
-	.bCount = 3,
-	.reserved = {0, 0, 0, 0, 0, 0, 0},
-	.interfaces = {
-		{
-			.bFirstInterfaceNumber = 0,
-			.reserved1 = 0x01,
-			.compatibleID = "WINUSB\0\0",
-			.subCompatibleID = {0, 0, 0, 0, 0, 0, 0, 0},
-			.reserved2 = {0, 0, 0, 0, 0, 0},
-		},
-		{
-			.bFirstInterfaceNumber = 1,
-			.reserved1 = 0x01,
-			.compatibleID = "WINUSB\0\0",
-			.subCompatibleID = {0, 0, 0, 0, 0, 0, 0, 0},
-			.reserved2 = {0, 0, 0, 0, 0, 0},
-		}
+
+
+typedef struct Bos {
+	USB_BOSHeaderDescriptor bos_header;
 	
+	USB_WEBUSBPlatformCapabilityDescriptor webusb_caps;
+	
+	USB_MSFTPlatformCapabilityDescriptor msft_capability_header;
+	
+	USB_MSFTDescriptorSetInfo msft_descriptor_set_info;
+	
+}  __attribute__((packed)) Bos;
+
+__attribute__((__aligned__(4)))  const Bos bos_descriptor =
+{
+	.bos_header = {
+		.bLength = sizeof(USB_BOSHeaderDescriptor),
+		.bDescriptorType = USB_DTYPE_BOS,
+		.wTotalLength = sizeof(Bos),
+		.bNumDeviceCaps = 2
+	},
+	.webusb_caps = {
+		.bLength = sizeof(USB_WEBUSBPlatformCapabilityDescriptor),
+		.bDescriptorType = USB_DTYPE_DeviceCapability,
+		.bDevCapabilityType = 0x05, //Platform,
+		.bReserved = 0,
+		.uuid = {0x38, 0xB6, 0x08, 0x34, 0xA9, 0x09, 0xA0, 0x47, 
+			0x8B, 0xFD, 0xA0,0x76, 0x88, 0x15, 0xB6, 0x65},
+		.bcdVersion = 0x0100,
+		.bVendorCode = WEBUSB_VENDOR_CODE,
+		.iLandingPage = 1
+	},
+	
+	.msft_capability_header = {
+		.bLength = sizeof(USB_MSFTPlatformCapabilityDescriptor) +
+		sizeof(USB_MSFTDescriptorSetInfo),
+		.bDescriptorType = USB_DTYPE_DeviceCapability,
+		.bDevCapabilityType = 0x05, //Platform
+		.bReserved = 0,
+		.uuid = {0xDF, 0x60, 0xDD, 0xD8, 0x89, 0x45, 0xC7, 0x4C,
+		0x9C, 0xD2, 0x65, 0x9D, 0x9E, 0x64, 0x8A, 0x9F} //Microsoft GUID
+	},
+	.msft_descriptor_set_info =
+	{
+		.dwWindowsVersion = 0x06030000, //
+		.wMSOSescriptorSetTotalLength = sizeof(MSFTDesc),
+		.bMSVendorCode = MS_VENDOR_CODE,
+		.bAltEnumCode = 0
 	}
 };
-*/
-/*
-typedef struct {
-	uint32_t dwLength;
-	uint16_t bcdVersion;
-	uint16_t wIndex;
-	uint16_t wCount;
-	uint32_t dwPropLength;
-	uint32_t dwType;
-	uint16_t wNameLength;
-	uint16_t name[21];
-	uint32_t dwDataLength;
-	uint16_t data[40];
-	uint8_t _padding[2];
-} __attribute__((packed)) USB_MicrosoftExtendedPropertiesDescriptor;
 
-const USB_MicrosoftExtendedPropertiesDescriptor msft_extended = {
-	.dwLength = 146,
-	.bcdVersion = 0x0100,
-	.wIndex = 0x05,
-	.wCount = 0x01,
-	.dwPropLength = 136,
-	.dwType = 7,
-	.wNameLength = 42,
-	.name = u"DeviceInterfaceGUIDs\0",
-	.dwDataLength = 80,
-	.data = u"{3c33bbfd-71f9-4815-8b8f-7cd1ef928b3d}\0\0",
+
+USB_WEBUSBURLDescriptor webusb_landing_page = {
+	.bLength = sizeof(webusb_landing_page) + 23, //size of the struct + length of url+1
+	.bDescriptorType = 0x03, //WEBUSB URL Descriptor
+	.bScheme = 0x1,			//https://
+	.url = "test-learn.kiwrious.com"
 };
-*/
+
 uint16_t usb_cb_get_descriptor(uint8_t type, uint8_t index, const uint8_t** ptr) {
 	const void* address = 0;
 	uint16_t size    = 0;
@@ -279,6 +275,10 @@ uint16_t usb_cb_get_descriptor(uint8_t type, uint8_t index, const uint8_t** ptr)
 		case USB_DTYPE_Configuration:
 		address = &configuration_descriptor;
 		size    = sizeof(ConfigDesc);
+		break;
+		case USB_DTYPE_BOS:
+		address = &bos_descriptor;
+		size = sizeof(bos_descriptor);
 		break;
 		case USB_DTYPE_String:
 		switch (index) {
@@ -297,13 +297,13 @@ uint16_t usb_cb_get_descriptor(uint8_t type, uint8_t index, const uint8_t** ptr)
 			case 0x04:
 			address = usb_string_to_descriptor("Kiwrious DFU");
 			break;
-			case 0xee:
-			*ptr = msft_str;
-			size = sizeof(msft_str);
-			return size;
-			
-			break;
-			
+			//case 0xee:
+			//*ptr = msft_str;
+			//size = sizeof(msft_str);
+			//return size;
+			//
+			//break;
+			//
 			default: //requesting invalid descriptor
 			*ptr = 0;
 			return 0;
@@ -374,26 +374,7 @@ void req_boot_status() {
 	usb_ep0_out();
 	return usb_ep0_in(0);
 }
-/*
-// TODO: Use the version in the USB library after making it handle descriptors larger than 64 bytes
-static inline void handle_msft_compatible(const USB_MicrosoftCompatibleDescriptor* msft_compatible, const USB_MicrosoftExtendedPropertiesDescriptor* msft_extended) {
-	uint16_t len;
-	if (usb_setup.wIndex == 0x0005) {
-		len = msft_extended->dwLength;
-		memcpy(ep0_buffer, msft_extended, len);
-		} else if (usb_setup.wIndex == 0x0004) {
-		len = msft_compatible->dwLength;
-		memcpy(ep0_buffer, msft_compatible, len);
-		} else {
-		return usb_ep0_stall();
-	}
-	if (len > usb_setup.wLength) {
-		len = usb_setup.wLength;
-	}
-	usb_ep_start_in(0x80, ep0_buffer, len, true);
-	usb_ep0_out();
-}
-*/
+
 void usb_cb_control_setup(void) {
 	uint8_t recipient = usb_setup.bmRequestType & USB_REQTYPE_RECIPIENT_MASK;
 	if (recipient == USB_RECIPIENT_DEVICE) {
@@ -458,3 +439,8 @@ bool usb_cb_set_interface(uint16_t interface, uint16_t new_altsetting) {
 	return false;
 }
 
+uint16_t webusb_getUrl(uint8_t** ptr)
+{
+	*ptr = &webusb_landing_page;
+	return (webusb_landing_page.bLength);
+}

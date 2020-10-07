@@ -14,9 +14,9 @@
 void veml_lights(uint8_t l)
 {
 	if (l)
-	PORT->Group[0].OUTSET.reg = 1 << 17;
+	PORT->Group[0].OUTSET.reg = (1 << 16) | (1 << 17) | (1 << 18);
 	else
-	PORT->Group[0].OUTCLR.reg = 1 << 17;
+	PORT->Group[0].OUTCLR.reg = (1 << 16) | (1 << 17) | (1 << 18);
 	
 }
 
@@ -30,7 +30,7 @@ int8_t veml_init()
 	
 	
 	
-	PORT->Group[0].DIRSET.reg = 1 <<17;
+	PORT->Group[0].DIRSET.reg = (1 << 16) | (1 << 17) | (1 << 18);
 	
 	veml_lights(1);
 	return K_SENSOR_OK;

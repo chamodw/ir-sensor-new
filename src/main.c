@@ -46,18 +46,25 @@ int main(void)
 	
 	clock_init();
 	dev_init(); //Initialize device
-	
 
-	//
+	PORT->Group[0].DIRSET.reg = (3 << 22);
+	PORT->Group[0].PINCFG[22].bit.INEN = 1;
+	i2c_init();
+	
+#define NO_USB1
+
+#ifndef NO_USB
 	usb_init();
 	usb_attach();
-	//
+#endif
 	//Need to allow time for enumeration to complete
 	uint32_t tick = clock_getTicks();
 	while((clock_getTicks()-tick)<100);
 	
+#ifndef NO_USB
 	usbserial_init();
-
+#endif
+	
 
 	i2c_init();
 
@@ -122,6 +129,14 @@ int main(void)
 	Kiw_DataPacket packet;
 	 
 	sensor_init(&packet);
+	
+	
+	
+	//Need to allow time for enumeration to complete
+	 tick = clock_getTicks();
+	while((clock_getTicks()-tick)<100);
+	
+
 
 
 	uint32_t timestamp = clock_getTicks();
@@ -129,18 +144,20 @@ int main(void)
 	while (1)
 	{
 	
+		//uint32_t d = measure_lux_uv_debug();
+	
 		
-	//	uint16_t count = sensor_read(packet.data);
-		//packet.len = count;
+		uint16_t count = sensor_read(packet.data);
+		packet.len = count;
 		packet.seq ++;
 
-		dev_led(1,1);
+	//	dev_led(1,1);
 		while((clock_getTicks()-timestamp) < 100);
-		
 		timestamp = clock_getTicks();
-		dev_led(1, 0);
+	//	dev_led(1, 0);
 		usbserial_tx((uint8_t*)&packet, sizeof(packet));
-
+		
+		//usbserial_tx((uint8_t*)&d, 4);
 		
 	}
 	

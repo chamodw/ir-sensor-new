@@ -118,6 +118,8 @@
     <ListValues>
       <Value>DEBUG</Value>
       <Value>K_SAMD21_</Value>
+      <Value>VERSION_BUILD_MACHINE=\"%24(shell whoami)\"</Value>
+      <Value>VERSION_BUILD_NUMBER=\"%24(shell git describe --abbrev=0)\"</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.IncludePaths>
@@ -126,7 +128,6 @@
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.395\samd21a\include</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
-  <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
   <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
   <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
@@ -160,8 +161,8 @@
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
 </ArmGcc>
     </ToolchainSettings>
-    <PostBuildEvent>ubuntu.exe run /mnt/c/Users/csam754/Documents/Projects/Kiwrious/Firmware/Bootloader/DFU/dx1elf2dfu $(OutputFileName).elf "../../DFU-Files/$(OutputFileName).dfu"
- </PostBuildEvent>
+    <PostBuildEvent>ubuntu.exe run /mnt/c/Users/csam754/Documents/Projects/Kiwrious/Firmware/Bootloader/DFU/dx1elf2dfu $(OutputFileName).elf "../../DFU-Files/D21_$([System.DateTime]::Now.toString("dd-MM-yyyy")).dfu"
+</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\src\bodyTemp.c">
@@ -336,6 +337,14 @@
       <SubType>compile</SubType>
       <Link>USB\Class\dfu.h</Link>
     </Compile>
+    <Compile Include="..\src\USB\msft_20.c">
+      <SubType>compile</SubType>
+      <Link>USB\msft_20.c</Link>
+    </Compile>
+    <Compile Include="..\src\USB\msft_20.h">
+      <SubType>compile</SubType>
+      <Link>USB\msft_20.h</Link>
+    </Compile>
     <Compile Include="..\src\USB\usb.c">
       <SubType>compile</SubType>
       <Link>USB\usb.c</Link>
@@ -372,6 +381,14 @@
       <SubType>compile</SubType>
       <Link>USB\usb_standard.h</Link>
     </Compile>
+    <Compile Include="..\src\UV\si1133.c">
+      <SubType>compile</SubType>
+      <Link>UV\si1133.c</Link>
+    </Compile>
+    <Compile Include="..\src\UV\si1133.h">
+      <SubType>compile</SubType>
+      <Link>UV\si1133.h</Link>
+    </Compile>
     <Compile Include="Device_Startup\startup_samd21.c">
       <SubType>compile</SubType>
     </Compile>
@@ -383,6 +400,7 @@
     <Folder Include="Device_Startup\" />
     <Folder Include="Color" />
     <Folder Include="Conductivity" />
+    <Folder Include="UV" />
     <Folder Include="Sensirion" />
     <Folder Include="USB" />
     <Folder Include="USB\Class" />

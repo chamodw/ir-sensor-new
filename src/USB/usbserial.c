@@ -142,17 +142,19 @@ void pipe_usb_out_completion()
 	
 }
 
-void flash_usb_in_completion()
-{
-	
-}
-
-void flash_usb_out_completion()
-{
-	
-}
 
 uint8_t usbserial_txBusy()
 {
 	return tx_busy;
+}
+
+// This is called by usb request handler on receipt of USB_CDC_SET_LINESTATE request
+//Sets/clears LED depending on DTR Value
+void usbserial_cb_linestate(uint8_t linestate)
+{
+	if(linestate &  0x01)
+		dev_led(0, 1);
+	else
+		dev_led(0,0);
+	
 }

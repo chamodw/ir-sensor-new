@@ -34,11 +34,13 @@ Definitions
 #define K_SENSOR_STATUS_UNKNOWN	1
 
 
+#define K_PKT_TYPE_DATA	1
 
 
 typedef  struct
 {
 	int16_t header; //Packet header constant  0x0A0A
+	int16_t type; //Indicates packet type
 	int16_t len;	//Number of data bytes used in this packet
 	int16_t data[8]; //Actual data, represented in int16 type
 	int16_t seq;	//Sequence number, to identify duplicate packets/dropped packets
@@ -97,7 +99,6 @@ const char* sensor_name();
 uint16_t sensor_read(int16_t* dest);
 
 
-#define KIW_SENSOR_TYPE SENSOR_TYPE_VOC
-
+#define KIW_SENSOR_TYPE SENSOR_TYPE_UV_LIGHT
 
 #endif /* SENSOR_H_ */
