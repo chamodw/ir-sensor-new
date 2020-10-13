@@ -64,11 +64,19 @@ typedef  struct
 		Green			= (unsigned short) data[1]
 		Blue			= (unsigned short) data[2]
 		White			= (unsigned short) data[3]
+	
+	UV and Light
+		Lux				= (float) (data[0] + (data[1] << 8))
+		UV				= (float) (data[2] + (data[3] << 8))
+		
+		
+	
 
 
 
 Example for humidity:
 		2570		Header 
+		263			Sensor type (humidity) + (packet type (data) << 8)
 		2			Data count (2)
 		2835		Temperature 28.35 C
 		4268		Humidity	42.68 %

@@ -1,5 +1,5 @@
 /*
- * IncFile1.h
+ * clock.h
  *
  * Created: 3/03/2020 4:59:20 PM
  *  Author: csam754
@@ -16,4 +16,4 @@
 void clock_init();
 uint32_t clock_getTicks();
 
-#endif /* INCFILE1_H_ */
+#endif /* CLOCK_H_ */

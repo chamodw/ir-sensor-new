@@ -165,10 +165,6 @@
 </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\src\bodyTemp.c">
-      <SubType>compile</SubType>
-      <Link>bodyTemp.c</Link>
-    </Compile>
     <Compile Include="..\src\clock.c">
       <SubType>compile</SubType>
       <Link>clock.c</Link>
@@ -204,10 +200,6 @@
     <Compile Include="..\src\main.c">
       <SubType>compile</SubType>
       <Link>main.c</Link>
-    </Compile>
-    <Compile Include="..\src\particle.h">
-      <SubType>compile</SubType>
-      <Link>particle.h</Link>
     </Compile>
     <Compile Include="..\src\Sensirion\humidity.h">
       <SubType>compile</SubType>

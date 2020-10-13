@@ -7,7 +7,6 @@
 
 #include "sam.h"
 #include "device.h"
-//#include "usbserial.h"
 #include "sercom_i2c.h"
 #include <string.h>
 #include "sensor.h"
@@ -59,20 +58,20 @@ int main(void)
 	while (1)
 	{
 	
-		//uint32_t d = measure_lux_uv_debug();
+
 	
 		
 		uint16_t count = sensor_read(packet.data);
 		packet.len = count;
 		packet.seq ++;
 
-	//	dev_led(1,1);
+
 		while((clock_getTicks()-timestamp) < 100);
 		timestamp = clock_getTicks();
-	//	dev_led(1, 0);
+
 		usbserial_tx((uint8_t*)&packet, sizeof(packet));
 		
-		//usbserial_tx((uint8_t*)&d, 4);
+		
 		
 	}
 	

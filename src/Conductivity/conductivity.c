@@ -16,10 +16,7 @@
 static uint8_t g_mode;
 static uint32_t g_range;
 
-//Multiplier for each range (This is the value of the connected resistor)
-//static uint32_t range_mul[] = {0, 100000, 10000, 1000};
-//static uint32_t range_lower_end[] = {0, 405, 405, 0};
-//static uint32_t range_upper_end[] = {0, 3723, 3723, 3723};
+
 	
 const float diode_compensation =  0.1; //compensation for the 100mV drop of the schottkey diode
 
