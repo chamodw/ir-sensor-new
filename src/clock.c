@@ -202,7 +202,11 @@ void clock_init()
 #ifdef K_SAMD21_
 		.bit.ID = GCLK_CLKCTRL_ID_SERCOM3_CORE,
 #else
+	#if K_HW_VERSION == 2
 		.bit.ID = GCLK_CLKCTRL_ID_SERCOM0_CORE,
+	#elif K_HW_VERSION ==3
+		.bit.ID = GCLK_CLKCTRL_ID_SERCOM1_CORE,
+	#endif
 #endif
 		.bit.WRTLOCK = 0
 	};

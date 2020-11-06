@@ -12,6 +12,10 @@
 
 
 
+#ifndef K_HW_VERSION
+#error "Hardware version not defined"
+#endif
+
 //Set LED Status
 void dev_led(uint8_t led, uint8_t status);
 
