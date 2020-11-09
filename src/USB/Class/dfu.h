@@ -33,8 +33,7 @@ typedef struct {
 extern int _end;
 
 
-//static volatile uint32_t *DBL_TAP_PTR = (volatile uint32_t *)(&_end);
-//#define DBL_TAP_MAGIC 0xf02669ef
+
 	
 void  dfu_requestHandler(USB_SetupPacket *packet);
 

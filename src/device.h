@@ -1,5 +1,5 @@
 /*
- * IncFile1.h
+ * Device.h
  *
  * Created: 15/03/2020 1:30:20 PM
  *  Author: csam754
@@ -39,4 +39,4 @@ void dev_init(void);
 
 
 
-#endif /* INCFILE1_H_ */
+#endif /* DEVICE_H_ */

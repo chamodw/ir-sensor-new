@@ -20,7 +20,6 @@ __attribute__((__aligned__(4))) USB_DfuStatusPacket status =
 void  dfu_requestHandler(USB_SetupPacket *packet)
 {
 	uint8_t req = packet->bRequest;
-//	uint8_t index = packet->wIndex;
 	uint8_t a = 0;
 
 	

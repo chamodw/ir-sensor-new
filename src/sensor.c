@@ -60,14 +60,15 @@ const char* sensor_name()
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_HUMIDITY
 		const char* s =  "Kiwrious Humidity Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_VOC
-	const char* s =  "Kiwrious VOC Sensor";
+		const char* s =  "Kiwrious VOC Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_COLOUR
-	const char* s =  "Kiwrious Colour Sensor";
+		const char* s =  "Kiwrious Colour Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
-const char* s =  "Kiwrious UV Sensor";
-	#else
-	const char* s = "Kiwrious Sensor";
+		const char* s =  "Kiwrious UV Sensor";
+#else
+		const char* s = "Kiwrious Sensor";
 #endif
+
 	return s;
 }
 

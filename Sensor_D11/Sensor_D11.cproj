@@ -204,10 +204,6 @@
       <SubType>compile</SubType>
       <Link>main.c</Link>
     </Compile>
-    <Compile Include="..\src\particle.h">
-      <SubType>compile</SubType>
-      <Link>particle.h</Link>
-    </Compile>
     <Compile Include="..\src\Sensirion\humidity.h">
       <SubType>compile</SubType>
       <Link>Sensirion\humidity.h</Link>
