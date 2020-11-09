@@ -401,16 +401,10 @@
     <Folder Include="UV\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="desktop.ini">
-      <SubType>compile</SubType>
-    </None>
     <None Include="Device_Startup\samd11d14am_flash.ld">
       <SubType>compile</SubType>
     </None>
     <None Include="Device_Startup\samd11d14am_sram.ld">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="Sensor_D21.cproj">
       <SubType>compile</SubType>
     </None>
   </ItemGroup>
