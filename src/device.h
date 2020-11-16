@@ -9,6 +9,7 @@
 #ifndef DEVICE_H_
 #define DEVICE_H_
 #include "sam.h"
+#include "sercom_i2c.h"
 
 
 

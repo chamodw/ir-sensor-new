@@ -256,13 +256,6 @@ __attribute__((__aligned__(4)))  const Bos bos_descriptor =
 };
 
 
-USB_WEBUSBURLDescriptor webusb_landing_page = {
-	.bLength = sizeof(webusb_landing_page) + 18, //size of the struct + length of url+1
-	.bDescriptorType = 0x03, //WEBUSB URL Descriptor
-	.bScheme = 0x1,			//https
-	.url = "learn.kiwrious.com"
-};
-
 uint16_t usb_cb_get_descriptor(uint8_t type, uint8_t index, const uint8_t** ptr) {
 	const void* address = 0;
 	uint16_t size    = 0;
@@ -437,10 +430,4 @@ bool usb_cb_set_interface(uint16_t interface, uint16_t new_altsetting) {
 	
 
 	return false;
-}
-
-uint16_t webusb_getUrl(uint8_t** ptr)
-{
-	*ptr = &webusb_landing_page;
-	return (webusb_landing_page.bLength);
 }

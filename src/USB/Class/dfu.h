@@ -37,4 +37,8 @@ extern int _end;
 	
 void  dfu_requestHandler(USB_SetupPacket *packet);
 
+
+//Copies a pointer to a WEBUSB_GETURL descriptor to ptr. Returns size of the descriptor
+uint16_t webusb_getUrl(uint8_t** ptr);
+
 #endif /* DFU_H_ */
