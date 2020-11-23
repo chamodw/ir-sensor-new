@@ -156,8 +156,8 @@ uint8_t usbserial_txBusy()
 void usbserial_cb_linestate(uint8_t linestate)
 {
 	if(linestate &  0x01)
-		dev_led(0, 1);
+		dev_led(1, 1);
 	else
-		dev_led(0,0);
+		dev_led(1,0);
 	
 }
