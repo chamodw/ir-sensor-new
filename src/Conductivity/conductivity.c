@@ -51,6 +51,20 @@ uint8_t cdt_init()
 	PORT->Group[0].PMUX[4].reg = PORT_PMUX_PMUXE(PORT_PMUX_PMUXE_B_Val);
 	
 #endif
+
+#if K_HW_VERSION ==3
+
+	PORT->Group[0].DIRSET.reg = (1 << PIN_RANGE_1) |
+								(1 << PIN_RANGE_2) |
+								(1 << PIN_RANGE_3) |
+								(1 << PIN_DIVIDER);
+
+PORT->Group[0].PINCFG[11].bit.PMUXEN = 1;
+PORT->Group[0].PINCFG[11].bit.PULLEN = 0;
+PORT->Group[0].PMUX[4].bit.PMUXO = PORT_PMUX_PMUXO(PORT_PMUX_PMUXO_B_Val);;
+
+
+#endif
 	
 	PM->APBCMASK.bit.ADC_ = 1; // Enable ADC Bus clock
 	
@@ -120,13 +134,13 @@ void cdt_setMode(uint32_t mode)
 		case CDT_MODE_RESISTANCE:
 			cdt_setPortA(PIN_DIVIDER, 0); //Disable /10 division
 			cdt_setRangeResistance(1); //Set the highest resistance ranges
-			cdt_setADCInput(AIN_10X);
+			cdt_setADCInput(AIN_1);
 		break;
 		
 		case CDT_MODE_VOLTAGE:
 			cdt_setPortA(PIN_DIVIDER, 1); //Enable /10 division
 			cdt_setRangeResistance(0); // This disconnects divider resistors used in resistance measurement
-			cdt_setADCInput(AIN_10X);
+			cdt_setADCInput(AIN_1);
 		break;
 	}
 	g_mode = mode;
