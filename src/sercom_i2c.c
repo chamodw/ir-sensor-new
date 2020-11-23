@@ -24,10 +24,17 @@ static volatile I2CM_STATUS i2c_status;
 
 static volatile uint8_t slave_ack; //set if a slave nacks
 
-#ifdef K_SAMD21_
-#define SERCOMX SERCOM3
+#ifdef K_SAMD21_ //Original set of sensors using SAMD21 microcontrollers
+#define SERCOMX			SERCOM3
+#define SERCOMX_IRQn	SERCOM3_IRQn
 #else
-#define SERCOMX SERCOM0
+	#if K_HW_VERSION == 2
+		#define SERCOMX SERCOM0
+		#define SERCOMX_IRQn	SERCOM0_IRQn
+	#elif K_HW_VERSION == 3
+		#define SERCOMX SERCOM1
+		#define SERCOMX_IRQn	SERCOM1_IRQn
+	#endif
 #endif
 
 
@@ -59,8 +66,8 @@ void i2c_init()
 	
 	
 #else
-	PM->APBCMASK.bit.SERCOM0_ = 1;		//Enable APB Clock for SERCOM30
-	
+#if K_HW_VERSION == 2
+	PM->APBCMASK.bit.SERCOM0_ = 1;		//Enable APB Clock for SERCOM0
 	
 	PORT->Group[0].PINCFG[14].bit.PMUXEN = 1;
 	PORT->Group[0].PINCFG[15].bit.PMUXEN = 1;
@@ -70,11 +77,22 @@ void i2c_init()
 	
 	PORT->Group[0].OUTSET.reg = (1 << 14) | (1 << 15);
 	
-	PORT->Group[0].PMUX[7].bit.PMUXE = PORT_PMUX_PMUXE_C;
-	PORT->Group[0].PMUX[7].bit.PMUXO = PORT_PMUX_PMUXO_C;
+		
+	PORT->Group[0].PMUX[7].reg = PORT_PMUX_PMUXE_C | PORT_PMUX_PMUXO_C;
+
+#elif K_HW_VERSION == 3
+
+	PM->APBCMASK.bit.SERCOM1_ = 1;		//Enable APB Clock for SERCOM1
 	
+	//Set PINMUX to connect SERCOM to the I2C Pins
+	PORT->Group[0].PINCFG[22].bit.PMUXEN = 1;
+	PORT->Group[0].PINCFG[23].bit.PMUXEN = 1;
 	
-#endif
+	PORT->Group[0].PMUX[11].reg = PORT_PMUX_PMUXE_C | PORT_PMUX_PMUXO_C;
+
+#endif //K_HW_VERSION	
+
+#endif //K_SAMD21_
 	
 	
 	
@@ -103,13 +121,10 @@ void i2c_init()
 	SERCOMX->I2CM.INTENSET.bit.SB  = 1;
 	SERCOMX->I2CM.INTENSET.bit.ERROR= 1;
 	
-#ifdef K_SAMD21_
-	NVIC_EnableIRQ(SERCOM3_IRQn);
-	NVIC_SetPriority(SERCOM3_IRQn, 1);
-#else
-	NVIC_EnableIRQ(SERCOM0_IRQn);
-	NVIC_SetPriority(SERCOM0_IRQn, 1);
-#endif
+
+	NVIC_EnableIRQ(SERCOMX_IRQn);
+	NVIC_SetPriority(SERCOMX_IRQn, 1);
+
 	i2c_status = IDLE;
 	
 	
@@ -275,7 +290,11 @@ void i2c_cmd(uint8_t ack, uint8_t cmd)
 #ifdef K_SAMD21_
 void SERCOM3_Handler()
 #else
+#if K_HW_VERSION == 2
 void SERCOM0_Handler()
+#elif K_HW_VERSION == 3
+void SERCOM1_Handler()
+#endif
 #endif
 {
 	uint32_t flags = SERCOMX->I2CM.INTFLAG.reg;

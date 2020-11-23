@@ -8,6 +8,13 @@ volatile uint8_t usb_configuration;
 
 uint16_t usb_ep0_in_size;
  uint8_t* usb_ep0_in_ptr;
+ 
+ 
+/*
+Prototypes
+*/
+ //Handles sending of msft20 descriptors broken over multiple requests
+ void usb_handle_msft20(); 
 
 void usb_ep0_in_multi(void) {
 	uint16_t tsize = usb_ep0_in_size;
@@ -103,7 +110,7 @@ void usb_handle_setup(void){
 						usb_ep_start_in(0x80, ep0_buf_in, size, true);
 						} else {
 						usb_ep0_in_size = size;
-						usb_ep0_in_ptr = descriptor;
+						usb_ep0_in_ptr = (uint8_t*)descriptor;
 						usb_ep0_in_multi();
 					}
 
@@ -192,6 +199,7 @@ void usb_handle_setup(void){
 				else if (usb_setup.bRequest == CDC_SET_CONTROL_LINE_STATE)
 				{
 					_usbLineInfo.lineState = usb_setup.wValue&0xff;
+					usbserial_cb_linestate(_usbLineInfo.lineState);
 					usb_ep0_in(0);
 					return usb_ep0_out();
 				}
@@ -224,7 +232,8 @@ void usb_handle_setup(void){
 	{
 		if ( usb_setup.bRequest == MS_VENDOR_CODE && usb_setup.wIndex == 0x0007)
 		{
-			return usb_handle_msft20();
+			usb_handle_msft20();
+			return;
 		}
 		else if ((usb_setup.bRequest == WEBUSB_VENDOR_CODE) && (usb_setup.wIndex == 0x02))
 		{
@@ -333,7 +342,7 @@ void usb_handle_msft_compatible(const USB_MicrosoftCompatibleDescriptor* msft_co
 	}
 }*/
 
-void* usb_string_to_descriptor( char* str) {
+void* usb_string_to_descriptor(const char* str) {
 	USB_StringDescriptor* desc = (((USB_StringDescriptor*)ep0_buf_in));
 	uint16_t len = strlen(str);
 	const uint16_t maxlen = (USB_EP0_SIZE - 2)/2;

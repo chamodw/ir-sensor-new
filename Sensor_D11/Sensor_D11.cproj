@@ -15,7 +15,7 @@
     <AssemblyName>Sensor-D21</AssemblyName>
     <Name>Sensor_D11</Name>
     <RootNamespace>Sensor-D21</RootNamespace>
-    <ToolchainFlavour>Native</ToolchainFlavour>
+    <ToolchainFlavour>GCC 9</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
@@ -67,6 +67,7 @@
   <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
   <armgcc.compiler.symbols.DefSymbols>
     <ListValues>
+      <Value>K_HW_VERSION=2</Value>
       <Value>NDEBUG</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
@@ -90,6 +91,7 @@
     </ListValues>
   </armgcc.linker.libraries.LibrarySearchPaths>
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
+  <armgcc.linker.memorysettings.ExternalRAM>False</armgcc.linker.memorysettings.ExternalRAM>
   <armgcc.linker.miscellaneous.LinkerFlags>-Tsamd11d14am_flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
   <armgcc.assembler.general.IncludePaths>
     <ListValues>
@@ -116,6 +118,7 @@
   <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
   <armgcc.compiler.symbols.DefSymbols>
     <ListValues>
+      <Value>K_HW_VERSION=3</Value>
       <Value>DEBUG</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
@@ -125,7 +128,7 @@
       <Value>%24(PackRepoDir)\atmel\SAMD11_DFP\1.1.81\include</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
-  <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
+  <armgcc.compiler.optimization.level>Optimize debugging experience (-Og)</armgcc.compiler.optimization.level>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
   <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
   <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
@@ -159,8 +162,8 @@
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
 </ArmGcc>
     </ToolchainSettings>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>ubuntu.exe run /mnt/c/Users/csam754/Documents/Projects/Kiwrious/Firmware/Bootloader/DFU/dx1elf2dfu $(OutputFileName).elf "../../DFU-Files/D11_$([System.DateTime]::Now.toString("dd-MM-yyyy")).dfu"
+</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\src\bodyTemp.c">
@@ -203,9 +206,25 @@
       <SubType>compile</SubType>
       <Link>main.c</Link>
     </Compile>
-    <Compile Include="..\src\particle.h">
+    <Compile Include="..\src\Segger\printf.c">
       <SubType>compile</SubType>
-      <Link>particle.h</Link>
+      <Link>Segger\printf.c</Link>
+    </Compile>
+    <Compile Include="..\src\Segger\SEGGER_RTT.c">
+      <SubType>compile</SubType>
+      <Link>Segger\SEGGER_RTT.c</Link>
+    </Compile>
+    <Compile Include="..\src\Segger\SEGGER_RTT.h">
+      <SubType>compile</SubType>
+      <Link>Segger\SEGGER_RTT.h</Link>
+    </Compile>
+    <Compile Include="..\src\Segger\SEGGER_RTT_Conf.h">
+      <SubType>compile</SubType>
+      <Link>Segger\SEGGER_RTT_Conf.h</Link>
+    </Compile>
+    <Compile Include="..\src\Segger\SEGGER_RTT_Syscalls_GCC.c">
+      <SubType>compile</SubType>
+      <Link>Segger\SEGGER_RTT_Syscalls_GCC.c</Link>
     </Compile>
     <Compile Include="..\src\Sensirion\humidity.h">
       <SubType>compile</SubType>
@@ -335,6 +354,14 @@
       <SubType>compile</SubType>
       <Link>USB\Class\dfu.h</Link>
     </Compile>
+    <Compile Include="..\src\USB\msft_20.c">
+      <SubType>compile</SubType>
+      <Link>USB\Class\msft_20.c</Link>
+    </Compile>
+    <Compile Include="..\src\USB\msft_20.h">
+      <SubType>compile</SubType>
+      <Link>USB\Class\msft_20.h</Link>
+    </Compile>
     <Compile Include="..\src\USB\usb.c">
       <SubType>compile</SubType>
       <Link>USB\usb.c</Link>
@@ -371,6 +398,14 @@
       <SubType>compile</SubType>
       <Link>USB\usb_standard.h</Link>
     </Compile>
+    <Compile Include="..\src\UV\si1133.c">
+      <SubType>compile</SubType>
+      <Link>UV\si1133.c</Link>
+    </Compile>
+    <Compile Include="..\src\UV\si1133.h">
+      <SubType>compile</SubType>
+      <Link>UV\si1133.h</Link>
+    </Compile>
     <Compile Include="Device_Startup\startup_samd11.c">
       <SubType>compile</SubType>
     </Compile>
@@ -382,21 +417,17 @@
     <Folder Include="Device_Startup\" />
     <Folder Include="Color" />
     <Folder Include="Conductivity" />
+    <Folder Include="Segger" />
     <Folder Include="Sensirion" />
     <Folder Include="USB" />
     <Folder Include="USB\Class" />
+    <Folder Include="UV\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="desktop.ini">
-      <SubType>compile</SubType>
-    </None>
     <None Include="Device_Startup\samd11d14am_flash.ld">
       <SubType>compile</SubType>
     </None>
     <None Include="Device_Startup\samd11d14am_sram.ld">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="Sensor_D21.cproj">
       <SubType>compile</SubType>
     </None>
   </ItemGroup>

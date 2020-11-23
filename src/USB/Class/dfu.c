@@ -8,6 +8,7 @@
 #include "dfu.h"
 #include "../usb_lib.h"
 
+//Word-aligned so USB can send this directly without copying
 __attribute__((__aligned__(4))) USB_DfuStatusPacket status =
 {
 	.bState = 0, //APP_IDLE
@@ -20,7 +21,6 @@ __attribute__((__aligned__(4))) USB_DfuStatusPacket status =
 void  dfu_requestHandler(USB_SetupPacket *packet)
 {
 	uint8_t req = packet->bRequest;
-//	uint8_t index = packet->wIndex;
 	uint8_t a = 0;
 
 	
@@ -38,7 +38,7 @@ void  dfu_requestHandler(USB_SetupPacket *packet)
 		
 		
 		case USB_DFU_REQ_GETSTATUS:
-			usb_ep_start_in(0x80, &status, sizeof(USB_DfuStatusPacket), 1);
+			usb_ep_start_in(0x80, (uint8_t*)&status, sizeof(USB_DfuStatusPacket), 1);
 			break;
 		
 		case USB_DFU_REQ_GETSTATE:
@@ -46,4 +46,23 @@ void  dfu_requestHandler(USB_SetupPacket *packet)
 			break;
 		
 	}
+}
+
+
+
+
+USB_WEBUSBURLDescriptor webusb_landing_page = {
+	.bLength = sizeof(webusb_landing_page) + 18, //size of the struct + length of url+1
+	.bDescriptorType = 0x03, //WEBUSB URL Descriptor
+	.bScheme = 0x1,			//https
+	.url = "learn.kiwrious.com"
+};
+
+
+
+
+uint16_t webusb_getUrl(uint8_t** ptr)
+{
+	*ptr = (uint8_t*)&webusb_landing_page;
+	return (webusb_landing_page.bLength);
 }

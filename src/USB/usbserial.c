@@ -9,6 +9,7 @@
 
 #include "usb_lib.h"
 #include "usb_standard.h"
+#include "../device.h"
 
 
 //Ping-pong buffers
@@ -142,17 +143,21 @@ void pipe_usb_out_completion()
 	
 }
 
-void flash_usb_in_completion()
-{
-	
-}
-
-void flash_usb_out_completion()
-{
-	
-}
 
 uint8_t usbserial_txBusy()
 {
 	return tx_busy;
+}
+
+/*	This is called by usb request handler on receipt of USB_CDC_SET_LINESTATE request
+	Sets/clears LED depending on DTR Value
+	LED stays on when connected to Kiwrious platform or any other serial terminal
+*/
+void usbserial_cb_linestate(uint8_t linestate)
+{
+	if(linestate &  0x01)
+		dev_led(1, 1);
+	else
+		dev_led(1,0);
+	
 }

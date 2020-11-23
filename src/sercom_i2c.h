@@ -20,6 +20,9 @@ void i2c_read(uint8_t addr, uint8_t* data, uint8_t n);
 //Write with repat start and then read
 void i2c_writeRead(uint8_t addr,  const uint8_t* data, uint8_t n1, uint8_t* dest, uint8_t n2);
 
+//Test the i2c bus for an address. Returns true if device exists
+uint8_t i2c_testAddr(uint8_t addr);
+
 
 typedef enum i2cm_status_type
 {

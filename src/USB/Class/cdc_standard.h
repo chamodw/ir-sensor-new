@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CDC_STANDARD_H
+#define CDC_STANDARD_H
+
 
 #define CDC_INTERFACE_CLASS 0x02
 #define CDC_INTERFACE_SUBCLASS_ACM 0x02
@@ -43,3 +45,6 @@ typedef struct {
   uint8_t parity_type;
   uint8_t data_bits;
 } __attribute__((packed)) CDC_LineEncoding;
+
+
+#endif //CDC_STANDARD_H

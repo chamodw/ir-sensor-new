@@ -18,7 +18,7 @@
 #define MSOS20_FEATURE_COMPATIBLE_ID			0x03
 #define MSOS20_FEATURE_REG_PROPERTY				0x04
 
-#define MS_VENDOR_CODE 0x12 //Vendor defined code used to retrieve the MS descriptorset
+#define MS_VENDOR_CODE 0x12 //Vendor defined code used to retrieve the MS descriptor set
 #define WEBUSB_VENDOR_CODE 0x13
 
 
@@ -86,10 +86,11 @@ typedef struct
 typedef struct MSFTDesc {
 	USB_MSFTDescriptorHeader			header;
 	USB_MSFTConfigurationSubsetHeader	config_header;
-	//
-	//USB_MSFTFunctionSubsetHeader		CDC_function;
-	//USB_MSFTCompatibleIDFeatureDescriptor	CDC_compatID;
-	
+	//No need to include the CDC in Microsoft Descriptor
+#if 0
+	USB_MSFTFunctionSubsetHeader		CDC_function;
+	USB_MSFTCompatibleIDFeatureDescriptor	CDC_compatID;
+#endif	
 	USB_MSFTFunctionSubsetHeader		DFU_function;
 	USB_MSFTCompatibleIDFeatureDescriptor	DFU_compatID;
 	USB_MSFTRegPropertyDescriptor DFU_regProperty;
