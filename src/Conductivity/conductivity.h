@@ -26,7 +26,7 @@
 
 #define PIN_RANGE_1 19
 #define PIN_RANGE_2	18
-#define PIN_RANGE_3 71yo
+#define PIN_RANGE_3 71
 
 #define AIN_1		11
 #define AIN_10X		10
