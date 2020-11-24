@@ -10,13 +10,20 @@
 
 void mrt311_init()
 {
+	
+	
+	PORT->Group[0].PINCFG[14].bit.PMUXEN = 1;
+	PORT->Group[0].PINCFG[15].bit.PMUXEN = 1;
+	PORT->Group[0].PMUX[7].bit.PMUXO = PORT_PMUX_PMUXE_B | PORT_PMUX_PMUXO_B;
+	
+	
 	PM->APBCMASK.bit.ADC_ = 1; // Enable ADC Bus clock
 	
 	
 	
 	ADC->CTRLA.bit.SWRST = 1;//Reset ADC
 	while(ADC->STATUS.bit.SYNCBUSY);
-	
+
 	
 	ADC->REFCTRL.bit.REFSEL = 0x02; //REF = VDDANA*0.5
 	
@@ -75,13 +82,17 @@ void mrt311_read(float* object, float* surface)
 	uint32_t ir, ntc;
 	
 	mrt311_setADCInput(MRT311_IR_ADC);
-	ir = mrt311_readADC();
+	ir = mrt311_readADC() ;
 
 	mrt311_setADCInput(MRT311_NTC_ADC);
 	ntc = mrt311_readADC();
 	
-	float ir_v = (float)ir*3300/4096;
-	ir_v /= 100;
-	float temp = 25+(ir_v*65)/6-(ir_v*ir_v)/6;
 	
+	float ir_v = (float)ir*0.008057-16.0 ; //3300/4096
+
+	float temp = ((ir_v*65-ir_v*ir_v))/6.0;
+	*object = temp+25;
+	*surface = (float)ir;
+	return 0;
+		
 }
