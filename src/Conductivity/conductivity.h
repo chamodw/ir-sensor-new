@@ -12,13 +12,21 @@
 
 #include "sam.h"
 
+
+
+#define PIN_DIVIDER	16
+
+#if K_HW_VERSION == 1
+
 #define PIN_RANGE_1 19
 #define PIN_RANGE_2	18
 #define PIN_RANGE_3 17
 
-#define PIN_DIVIDER	16
+#elif K_HW_VERSION == 2
 
-#if K_HW_VERSION == 2
+#define PIN_RANGE_1 19
+#define PIN_RANGE_2	18
+#define PIN_RANGE_3 71yo
 
 #define AIN_1		11
 #define AIN_10X		10
