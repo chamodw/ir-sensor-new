@@ -18,8 +18,8 @@ static uint32_t g_range;
 
 
 	
-const float diode_compensation =  0.0; //compensation for the 100mV drop of the schottkey diode
-
+const float diode_compensation =  0.25; //compensation for the 100mV drop of the schottkey diode
+const float fuse_resistnce = 8.0; //Resistance of polyfuse in normal operation mode
 uint8_t cdt_init()
 {
 	
@@ -153,21 +153,21 @@ void cdt_setRangeResistance(uint8_t range)
 	{
 		switch (range)
 		{
-			case 1:
+			case 1: //100k
 				cdt_setPortA(PIN_RANGE_2, 0);
 				cdt_setPortA(PIN_RANGE_3, 0);
 				cdt_setPortA(PIN_RANGE_1, 1);
 				cdt_setADCInput(AIN_1);
 				g_range = 1;
 				break;
-			case 2:
+			case 2: //10k
 				cdt_setPortA(PIN_RANGE_1, 0);
 				cdt_setPortA(PIN_RANGE_3, 0);
 				cdt_setPortA(PIN_RANGE_2, 1);
 				cdt_setADCInput(AIN_1);
 				g_range = 2;
 				break;
-			case 3:
+			case 3: //1k
 				cdt_setPortA(PIN_RANGE_1, 0);
 				cdt_setPortA(PIN_RANGE_2, 0);
 				cdt_setPortA(PIN_RANGE_3, 1);
@@ -215,7 +215,7 @@ int16_t cdt_readAuto(int16_t* value, int16_t* range, int16_t* debug_buffer)
 	uint32_t t ;
 	uint16_t adc_values[3];
 	
-	for(int i = 1; i <= 1;i++)
+	for(int i = 1; i <= 3;i++)
 	{
 		cdt_setRangeResistance(i);
 		
@@ -227,7 +227,7 @@ int16_t cdt_readAuto(int16_t* value, int16_t* range, int16_t* debug_buffer)
 	}
 	
 	
-	
+	const float adc_max = (4096/3.3*(3.3-diode_compensation)); //TODO: different values for didfferent ranges
 	
 	if (adc_values[0] > 4000)
 	{
@@ -236,22 +236,22 @@ int16_t cdt_readAuto(int16_t* value, int16_t* range, int16_t* debug_buffer)
 	}
 	else if (adc_values[0] < 4000 && adc_values[1] > 3000) //Use the 100k range for measurement
 	{
-		float a = adc_values[0];
-		float out = 3300*a/(4096*(3.3-diode_compensation) - a*3.3);
+		float a = (float)adc_values[0];
+		float out = a*1000/(adc_max - a);
 		*value = (int16_t) out;
 		*range = 100;
 	}
 	else if (adc_values[1] <= 3000 && adc_values[2] > 3000) //Use the 10k range
 	{
-		float a = adc_values[1];
-		float out = 3300*a/(4096*(3.3-diode_compensation) - a*3.3);
+		float a = (float)adc_values[1];
+		float out = a*1000/(adc_max - a);
 		*value = (int16_t) out;
 		*range = 10;
 	}
 	else 
 	{
-		float a = adc_values[2];
-		float out = 3300*a/(4096*(3.3-diode_compensation) - a*3.3);
+		float a = (float)adc_values[2];
+		float out = a*1000/(adc_max - a);
 		*value = (int16_t) out;
 		*range = 1;
 	}
@@ -259,10 +259,12 @@ int16_t cdt_readAuto(int16_t* value, int16_t* range, int16_t* debug_buffer)
 	
 	//for debug
 	if(debug_buffer)
-	debug_buffer[0] = adc_values[0];
-	debug_buffer[1] = adc_values[1];
-	debug_buffer[2] = adc_values[2];
-	
+	{
+		
+		debug_buffer[0] = adc_values[0];
+		debug_buffer[1] = adc_values[1];
+		debug_buffer[2] = adc_values[2];
+	}
 	return K_SENSOR_OK;
 	
 
