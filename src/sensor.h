@@ -35,6 +35,7 @@ Definitions
 
 
 #define K_PKT_TYPE_DATA	1
+#define K_PKT_TYPE_CMD	2
 
 /*
 TODO: Test: Unaligned access to data*?
