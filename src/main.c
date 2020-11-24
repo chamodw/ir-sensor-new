@@ -70,8 +70,8 @@ int main(void)
 		while((clock_getTicks()-timestamp) < 100);
 		timestamp = clock_getTicks();
 	//	dev_led(1, 0);
-			usbserial_tx(packet.data, 2);
-			continue;
+		usbserial_tx((uint8_t*)&packet, sizeof(packet));
+			
 
 		
 		
