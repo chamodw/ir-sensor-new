@@ -139,12 +139,12 @@ uint16_t sensor_read(int16_t* dest)
 		//return 0;
 
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
-	float res[2]; //ir, object
-	int8_t e = mrt311_read(&res[0], &res[1]);
+	uint16_t object, sensor;
+	int8_t e = mrt311_read(&object, &sensor);
 
 	
-	dest[0] = (uint16_t)res[0];
-	dest[1] = (uint16_t) res[1];
+	dest[0] = (uint16_t)object;
+	dest[1] = (uint16_t) sensor;
 #else	
 	return 0; //No bytes written
 #endif

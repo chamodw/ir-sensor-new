@@ -7,7 +7,7 @@
 
 #include "mrt311.h"
 #include "sam.h"
-
+#include "../sensor.h"
 void mrt311_init()
 {
 	
@@ -76,7 +76,45 @@ uint32_t mrt311_readADC()
 }
 
 
-void mrt311_read(float* object, float* surface)
+static int16_t ntcToTemp(uint16_t adc)
+{
+	int32_t x = adc;
+	int64_t p3 = x>>2;//*x*x*455/1e11;
+	//
+	p3 = __muldi3(p3, x);
+	p3 = p3>>10;
+	p3 = __muldi3 (p3, x);
+	p3 = p3>>6;
+	p3 = __muldi3 (p3, 5005);
+	//p3 = __muldi3(p3, -1);
+	//
+	//divide by 2^40
+	int32_t uw_p3 = p3 >> 18; 
+//	uw_p3 = uw_p3 >> 2;
+	uw_p3 = uw_p3*-1;
+
+	
+	int64_t p2 = x;// 3105*x*x/1e8;
+	p2 = __muldi3(p2, x);
+	p2 = __muldi3(p2, 133515);
+	
+	//divide by 2^32
+	int32_t uw_p2 = p2 >> 32;
+	
+	
+	int64_t p1 = x;
+	p1 = __muldi3(p1, 380103960);
+	
+	//divide by 2^32
+	int32_t uw_p1 = p1 >> 32;
+	
+	int32_t y = uw_p3 + uw_p2 + uw_p1 + 114;//+p2+p1+p0;
+	
+	return y ;//+ 0.42;
+	
+}
+
+uint16_t mrt311_read(uint16_t* object, int16_t* sensor)
 {
 	
 	uint32_t ir, ntc;
@@ -88,11 +126,11 @@ void mrt311_read(float* object, float* surface)
 	ntc = mrt311_readADC();
 	
 	
-	float ir_v = (float)ir*0.008057-16.0 ; //3300/4096
+	//float ir_v = (float)ir*0.008057-16.0 ; //3300/4096
 
-	float temp = ((ir_v*65-ir_v*ir_v))/6.0;
-	*object = temp+25;
-	*surface = (float)ir;
-	return 0;
+	//float temp = ((ir_v*65-ir_v*ir_v))/6.0;
+	//*object = temp+25;
+	*sensor = ntcToTemp(ntc);
+	return K_SENSOR_OK;
 		
 }
