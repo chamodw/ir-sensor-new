@@ -84,15 +84,15 @@ int main(void)
 	pah_init();
 	
 	
-	pah_enter_mode(pah_ppg_mode);
+	pah_enter_mode(pah_ppg_200hz_mode);
 	
 	pah_set_report_fifo_callback(&fifo_handler, 0);
 
 	pah_ret result = 0;
-	pah_task();
+	
 	while(1)
 	{
-	
+	pah_task();
 		if(pah_int)
 		{
 			result = pah_task();
@@ -115,7 +115,7 @@ int main(void)
 				
 				usbserial_tx(str, strlen(str));
 				
-				clock_delayMs(5);
+				clock_delayMs(3);
 				
 			}
 			dev_led(1, 1);
