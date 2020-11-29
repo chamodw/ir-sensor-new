@@ -135,7 +135,7 @@ USB_Speed usb_get_speed(void);
 void usb_handle_msft_compatible(const USB_MicrosoftCompatibleDescriptor* msft_compatible);
 
 /// Convert a C string to a string descriptor in the ep0 IN buffer
-void* usb_string_to_descriptor( char* str);
+void* usb_string_to_descriptor(const char* str);
 
 /// Internal common methods called by the hardware API
 void usb_handle_setup(void);

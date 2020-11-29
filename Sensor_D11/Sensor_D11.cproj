@@ -15,7 +15,7 @@
     <AssemblyName>Sensor-D21</AssemblyName>
     <Name>Sensor_D11</Name>
     <RootNamespace>Sensor-D21</RootNamespace>
-    <ToolchainFlavour>Native</ToolchainFlavour>
+    <ToolchainFlavour>GCC 9</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
@@ -47,7 +47,7 @@
     <com_atmel_avrdbg_tool_samice>
       <ToolOptions>
         <InterfaceProperties>
-          <SwdClock>12000000</SwdClock>
+          <SwdClock>4000000</SwdClock>
         </InterfaceProperties>
         <InterfaceName>SWD</InterfaceName>
       </ToolOptions>
@@ -55,7 +55,7 @@
       <ToolNumber>261005414</ToolNumber>
       <ToolName>J-Link</ToolName>
     </com_atmel_avrdbg_tool_samice>
-    <avrtoolinterfaceclock>12000000</avrtoolinterfaceclock>
+    <avrtoolinterfaceclock>4000000</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -67,6 +67,7 @@
   <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
   <armgcc.compiler.symbols.DefSymbols>
     <ListValues>
+      <Value>K_HW_VERSION=2</Value>
       <Value>NDEBUG</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
@@ -90,6 +91,7 @@
     </ListValues>
   </armgcc.linker.libraries.LibrarySearchPaths>
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
+  <armgcc.linker.memorysettings.ExternalRAM>False</armgcc.linker.memorysettings.ExternalRAM>
   <armgcc.linker.miscellaneous.LinkerFlags>-Tsamd11d14am_flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
   <armgcc.assembler.general.IncludePaths>
     <ListValues>
@@ -116,6 +118,7 @@
   <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
   <armgcc.compiler.symbols.DefSymbols>
     <ListValues>
+      <Value>K_HW_VERSION=3</Value>
       <Value>DEBUG</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
@@ -123,9 +126,10 @@
     <ListValues>
       <Value>%24(PackRepoDir)\arm\CMSIS\5.4.0\CMSIS\Core\Include\</Value>
       <Value>%24(PackRepoDir)\atmel\SAMD11_DFP\1.1.81\include</Value>
+      <Value>..</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
-  <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
+  <armgcc.compiler.optimization.level>Optimize debugging experience (-Og)</armgcc.compiler.optimization.level>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
   <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
   <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
@@ -159,8 +163,9 @@
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
 </ArmGcc>
     </ToolchainSettings>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>ubuntu.exe run /mnt/c/Users/csam754/Documents/Projects/Kiwrious/Firmware/Bootloader/DFU/dx1elf2dfu $(OutputFileName).elf "../../DFU-Files/D11_$([System.DateTime]::Now.toString("dd-MM-yyyy")).dfu"
+</PostBuildEvent>
+    <PreBuildEvent>ubuntu.exe run git describe --abbrev=0 | tr -d 'v' | sed -e "s/\([0-9]*\).\([0-9]*\)/#define FW_MAJOR \1\n#define FW_MINOR \2/" &gt; ../fw_version.h </PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\src\bodyTemp.c">
@@ -203,61 +208,25 @@
       <SubType>compile</SubType>
       <Link>main.c</Link>
     </Compile>
-    <Compile Include="..\src\particle.h">
+    <Compile Include="..\src\Segger\printf.c">
       <SubType>compile</SubType>
-      <Link>particle.h</Link>
+      <Link>Segger\printf.c</Link>
     </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_comm.h">
+    <Compile Include="..\src\Segger\SEGGER_RTT.c">
       <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_comm.h</Link>
+      <Link>Segger\SEGGER_RTT.c</Link>
     </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_comm_i2c.c">
+    <Compile Include="..\src\Segger\SEGGER_RTT.h">
       <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_comm_i2c.c</Link>
+      <Link>Segger\SEGGER_RTT.h</Link>
     </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_debug_log.h">
+    <Compile Include="..\src\Segger\SEGGER_RTT_Conf.h">
       <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_debug_log.h</Link>
+      <Link>Segger\SEGGER_RTT_Conf.h</Link>
     </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_driver.h">
+    <Compile Include="..\src\Segger\SEGGER_RTT_Syscalls_GCC.c">
       <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_driver.h</Link>
-    </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_driver_8011.c">
-      <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_driver_8011.c</Link>
-    </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_driver_8011_reg.h">
-      <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_driver_8011_reg.h</Link>
-    </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_driver_8011_reg_array.c">
-      <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_driver_8011_reg_array.c</Link>
-    </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_driver_8011_reg_array.h">
-      <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_driver_8011_reg_array.h</Link>
-    </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_i2c.c">
-      <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_i2c.c</Link>
-    </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_i2c.h">
-      <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_i2c.h</Link>
-    </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_platform_functions.h">
-      <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_platform_functions.h</Link>
-    </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_platform_types.h">
-      <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_platform_types.h</Link>
-    </Compile>
-    <Compile Include="..\src\PPG\sns_dd_pah_system_clock.h">
-      <SubType>compile</SubType>
-      <Link>PPG\sns_dd_pah_system_clock.h</Link>
+      <Link>Segger\SEGGER_RTT_Syscalls_GCC.c</Link>
     </Compile>
     <Compile Include="..\src\Sensirion\humidity.h">
       <SubType>compile</SubType>
@@ -387,6 +356,14 @@
       <SubType>compile</SubType>
       <Link>USB\Class\dfu.h</Link>
     </Compile>
+    <Compile Include="..\src\USB\msft_20.c">
+      <SubType>compile</SubType>
+      <Link>USB\Class\msft_20.c</Link>
+    </Compile>
+    <Compile Include="..\src\USB\msft_20.h">
+      <SubType>compile</SubType>
+      <Link>USB\Class\msft_20.h</Link>
+    </Compile>
     <Compile Include="..\src\USB\usb.c">
       <SubType>compile</SubType>
       <Link>USB\usb.c</Link>
@@ -423,6 +400,14 @@
       <SubType>compile</SubType>
       <Link>USB\usb_standard.h</Link>
     </Compile>
+    <Compile Include="..\src\UV\si1133.c">
+      <SubType>compile</SubType>
+      <Link>UV\si1133.c</Link>
+    </Compile>
+    <Compile Include="..\src\UV\si1133.h">
+      <SubType>compile</SubType>
+      <Link>UV\si1133.h</Link>
+    </Compile>
     <Compile Include="Device_Startup\startup_samd11.c">
       <SubType>compile</SubType>
     </Compile>
@@ -434,22 +419,17 @@
     <Folder Include="Device_Startup\" />
     <Folder Include="Color" />
     <Folder Include="Conductivity" />
-    <Folder Include="PPG" />
+    <Folder Include="Segger" />
     <Folder Include="Sensirion" />
     <Folder Include="USB" />
     <Folder Include="USB\Class" />
+    <Folder Include="UV\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="desktop.ini">
-      <SubType>compile</SubType>
-    </None>
     <None Include="Device_Startup\samd11d14am_flash.ld">
       <SubType>compile</SubType>
     </None>
     <None Include="Device_Startup\samd11d14am_sram.ld">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="Sensor_D21.cproj">
       <SubType>compile</SubType>
     </None>
   </ItemGroup>

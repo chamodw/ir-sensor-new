@@ -1,5 +1,5 @@
 /*
- * IncFile1.h
+ * Device.h
  *
  * Created: 15/03/2020 1:30:20 PM
  *  Author: csam754
@@ -9,8 +9,13 @@
 #ifndef DEVICE_H_
 #define DEVICE_H_
 #include "sam.h"
+#include "sercom_i2c.h"
 
 
+
+#ifndef K_HW_VERSION
+#error "Hardware version not defined"
+#endif
 
 //Set LED Status
 void dev_led(uint8_t led, uint8_t status);
@@ -35,4 +40,4 @@ void dev_init(void);
 
 
 
-#endif /* INCFILE1_H_ */
+#endif /* DEVICE_H_ */

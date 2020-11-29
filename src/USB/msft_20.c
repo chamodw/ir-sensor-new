@@ -39,22 +39,23 @@ __attribute__((__aligned__(4))) const MSFTDesc MSFTDescriptor = {
 		.bReserved = 0,
 		.wTotalLength = sizeof(MSFTDesc) - sizeof(USB_MSFTDescriptorHeader)
 	},
-	//
-	//.CDC_function = {
-		//.wLength = sizeof(USB_MSFTFunctionSubsetHeader),
-		//.wDescriptorType = MSOS20_SUBSET_HEADER_FUNCTION,
-		//.bFirstInterface = INTERFACE_CDC_CONTROL,
-		//.bReserved = 0,
-		//.wSubsetLength = sizeof(USB_MSFTFunctionSubsetHeader) + 
-				//sizeof(USB_MSFTCompatibleIDFeatureDescriptor)	
-	//},
-	//.CDC_compatID = {
-		//.wLength = sizeof(USB_MSFTCompatibleIDFeatureDescriptor),
-		//.wDescriptorType = MSOS20_FEATURE_COMPATIBLE_ID,
-		//.CompatibleID = {0, 0, 0, 0, 0, 0, 0, 0},
-		//.subCompatibleID = {0, 0, 0, 0, 0, 0, 0, 0}
-	//},
-	
+	// We don't need to include CDC in the MSFT descriptor as windows loads the driver itself
+#if 0	
+	.CDC_function = {
+		.wLength = sizeof(USB_MSFTFunctionSubsetHeader),
+		.wDescriptorType = MSOS20_SUBSET_HEADER_FUNCTION,
+		.bFirstInterface = INTERFACE_CDC_CONTROL,
+		.bReserved = 0,
+		.wSubsetLength = sizeof(USB_MSFTFunctionSubsetHeader) + 
+				sizeof(USB_MSFTCompatibleIDFeatureDescriptor)	
+	},
+	.CDC_compatID = {
+		.wLength = sizeof(USB_MSFTCompatibleIDFeatureDescriptor),
+		.wDescriptorType = MSOS20_FEATURE_COMPATIBLE_ID,
+		.CompatibleID = {0, 0, 0, 0, 0, 0, 0, 0},
+		.subCompatibleID = {0, 0, 0, 0, 0, 0, 0, 0}
+	},
+#endif
 	.DFU_function =  {
 		.wLength = sizeof(USB_MSFTFunctionSubsetHeader),
 		.wDescriptorType = MSOS20_SUBSET_HEADER_FUNCTION,

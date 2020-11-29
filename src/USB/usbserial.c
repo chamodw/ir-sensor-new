@@ -9,7 +9,11 @@
 
 #include "usb_lib.h"
 #include "usb_standard.h"
+#include "usbserial.h"
+#include "../device.h"
+#include "../sensor.h"
 
+#include "fw_version.h"
 
 //Ping-pong buffers
 __attribute__((__aligned__(4))) volatile uint8_t usbserial_buffer_out_a[BUF_SIZE];
@@ -21,6 +25,8 @@ __attribute__((__aligned__(4))) volatile uint8_t usbserial_buffer_in_b[BUF_SIZE]
 //Pointers to ping-pong buffers
 volatile uint8_t* buffers_out[] = {usbserial_buffer_out_a, usbserial_buffer_out_b};
 volatile uint8_t* buffers_in[] = {usbserial_buffer_in_a, usbserial_buffer_in_b};
+
+
 
 
 volatile uint8_t idx_out[] = {0, 0};
@@ -35,23 +41,56 @@ volatile uint8_t out_a = 1;
 volatile uint8_t tx_busy;
 //volatile uint8_t tx_busy;
 
+
+ Kiw_DataPacket hw_info;
+ 
+ /*
+ data[0]: sensor type
+ data[1]: hw major
+ data[2]: hw minor
+ data[3]: fw major
+ data[4]: fw minor
+*/
+
+
 void usbserial_init()
 {
 	usb_enable_ep(USB_EP_CDC_NOTIFICATION, USB_EP_TYPE_INTERRUPT, 8);
 	usb_enable_ep(USB_EP_CDC_OUT, USB_EP_TYPE_BULK, 64);
 	usb_enable_ep(USB_EP_CDC_IN, USB_EP_TYPE_BULK, 64);
 
-	usb_ep_start_out(USB_EP_CDC_OUT, buffers_out[0], BUF_SIZE);
+	usb_ep_start_out(USB_EP_CDC_OUT, usbserial_buffer_out_a, BUF_SIZE);
 	
 	tx_busy = 0;
 }
+
+
+
 
 void usbserial_out_completion()
 {
 
 	//uint32_t len = usb_ep_out_length(USB_EP_CDC_OUT);
 	//memcpy(usbserial_buffer_in, usbserial_buffer_out, len);
-	usb_ep_start_out(USB_EP_CDC_OUT, buffers_in[0], 64);
+	usb_ep_start_out(USB_EP_CDC_OUT, usbserial_buffer_out_a, 64);
+	
+	//if (usbserial_buffer_out_a[0] == '0x0A')
+	{
+		while(tx_busy);
+		hw_info.type = (K_PKT_TYPE_CMD << 8) | (KIW_SENSOR_TYPE );
+		hw_info.header = 0x0A0A;
+		hw_info.footer = 0x0B0B;
+		hw_info.seq = 0;
+		
+		hw_info.data[0] = KIW_SENSOR_TYPE; //Sensor type
+		hw_info.data[1] = 1; // hw major
+		hw_info.data[2] = K_HW_VERSION; //hw minor
+		hw_info.data[3] = FW_MAJOR;
+		hw_info.data[4] = FW_MINOR;
+		
+		usbserial_tx( (uint8_t * ) &hw_info, sizeof(Kiw_DataPacket));
+		
+	}
 }
 
 
@@ -120,14 +159,8 @@ int usbserial_tx(uint8_t* data, uint16_t n)
 
 void usbserial_in_completion()
 {
-	/*
-	uint8_t i = 0; // indicates selected buffer
-	if (in_sel) //a is used by firmware, that means USB is using b
-		i = 0;
-	else
-		i = 1;
-		
-	idx_in[i] = 0; //Buffer emptied*/
+	
+	
 	
 	tx_busy = 0;
 	
@@ -148,13 +181,15 @@ uint8_t usbserial_txBusy()
 	return tx_busy;
 }
 
-// This is called by usb request handler on receipt of USB_CDC_SET_LINESTATE request
-//Sets/clears LED depending on DTR Value
+/*	This is called by usb request handler on receipt of USB_CDC_SET_LINESTATE request
+	Sets/clears LED depending on DTR Value
+	LED stays on when connected to Kiwrious platform or any other serial terminal
+*/
 void usbserial_cb_linestate(uint8_t linestate)
 {
 	if(linestate &  0x01)
-		dev_led(0, 1);
+		dev_led(1, 1);
 	else
-		dev_led(0,0);
+		dev_led(1,0);
 	
 }
