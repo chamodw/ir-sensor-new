@@ -42,6 +42,8 @@ uint8_t sensor_init(Kiw_DataPacket* packet)
 	e = veml_init();
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
 	e = Si1133_init();
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
+	e = mrt311_init();
 #endif
 
 
@@ -66,6 +68,8 @@ const char* sensor_name()
 		const char* s =  "Kiwrious Colour Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
 		const char* s =  "Kiwrious UV Sensor";
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
+		const char* s =  "Kiwrious Temperature Sensor";
 #else
 		const char* s = "Kiwrious Sensor";
 #endif
@@ -133,6 +137,14 @@ uint16_t sensor_read(int16_t* dest)
 	}
 	//else
 		//return 0;
+
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
+	uint16_t object, sensor;
+	int8_t e = mrt311_read(&object, &sensor);
+
+	
+	dest[0] = (uint16_t)object;
+	dest[1] = (uint16_t) sensor;
 #else	
 	return 0; //No bytes written
 #endif
