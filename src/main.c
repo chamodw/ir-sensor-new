@@ -69,18 +69,32 @@ int main(void)
 	i2c_init();
 
 
-	PORT->Group[0].DIRCLR.reg = 1 << 22;
-	PORT->Group[0].PINCFG[22].reg = PORT_PINCFG_INEN | PORT_PINCFG_PMUXEN;
-	PORT->Group[0].PMUX[11].bit.PMUXE = PORT_PMUX_PMUXE_A_Val;
+	PORT->Group[0].DIRCLR.reg = 1 << 14;
+	PORT->Group[0].OUT.reg = 1 << 14;
+	PORT->Group[0].PINCFG[14].reg = PORT_PINCFG_INEN | PORT_PINCFG_PMUXEN | PORT_PINCFG_PULLEN;
+	PORT->Group[0].PMUX[7].bit.PMUXE = PORT_PMUX_PMUXE_A_Val;
 	PM->APBAMASK.bit.EIC_ = 1;
 	
-	EIC->CONFIG[0].bit.SENSE6 = EIC_CONFIG_SENSE6_RISE_Val;
-	EIC->INTENSET.bit.EXTINT6 = 1;
+	EIC->NMICTRL.bit.NMISENSE = EIC_NMICTRL_NMISENSE_FALL;
+	//EIC->INTENSET.bit.EXTINT6 = 1;
+	
+	
+	// Connect GCLK_EIC to GCLK4 (1MHz)
+	GCLK_CLKCTRL_Type gclk_clkctrleic =
+	{
+		.bit.CLKEN = 1,
+		.bit.GEN = 4, //Use GCLK4
+		.bit.ID = GCLK_CLKCTRL_ID_EIC_Val, //GCLK_EIC
+		.bit.WRTLOCK = 0
+	};
+	GCLK->CLKCTRL.reg = gclk_clkctrleic.reg;
+	while(GCLK->STATUS.bit.SYNCBUSY);
+	
 	EIC->CTRL.bit.ENABLE = 1;
 	while(EIC->STATUS.bit.SYNCBUSY);
 	
-	NVIC_EnableIRQ(EIC_IRQn);
-	NVIC_SetPriority(EIC_IRQn, 10);
+	NVIC_EnableIRQ(NonMaskableInt_IRQn);
+	NVIC_SetPriority(NonMaskableInt_IRQn, 3);
 	pah_init();
 	
 	
@@ -90,9 +104,20 @@ int main(void)
 
 	pah_ret result = 0;
 	
+	
+	
+	
+	Kiw_DataPacket packets[2]; //Most sensors use only one data packet per reading, but HRM needs two
+	
+	Kiw_DataPacket* packet = &packets[0];
+	
+	sensor_init(&packets[0]);
+	sensor_init(&packets[1]);
+	
+	
 	while(1)
 	{
-	pah_task();
+	//pah_task();
 		if(pah_int)
 		{
 			result = pah_task();
@@ -104,18 +129,23 @@ int main(void)
 		if(newdata)
 		{
 			dev_led(1, 1);
-			for(int j = 0; j < sample_num; j+=2)
+			for(int i = 0; i < sample_num; i+=10)
 			{
-				uint32_t i = j;
-				if (i >= sample_num)
-					 continue;
-				uint32_t x = data[i];
 				
-				snprintf(str, sizeof(str), "%u\n", data[i+1]);
+				for (size_t j = 0; j < 5; j++)
+				{
+					packets[0].data[j] = data[i+j+1];
+					packets[0].data[j] = data[i+j+1] >> 8;
+				}
+				for (size_t j = 0; j < 5; j++)
+				{
+					packets[1].data[j] = data[i+j+6];
+					packets[1].data[j] = data[i+j+6] >> 8;
+				}
+								
+			//	usbserial_tx(packets, sizeof(packets));
 				
-				usbserial_tx(str, strlen(str));
-				
-				clock_delayMs(3);
+				clock_delayMs(5);
 				
 			}
 			dev_led(1, 1);
@@ -126,9 +156,6 @@ int main(void)
 	}
 	
 
-	Kiw_DataPacket packet;
-	 
-	sensor_init(&packet);
 	
 	
 	
@@ -147,9 +174,9 @@ int main(void)
 		//uint32_t d = measure_lux_uv_debug();
 	
 		
-		uint16_t count = sensor_read(packet.data);
-		packet.len = count;
-		packet.seq ++;
+		uint16_t count = sensor_read(packet->data);
+		packet->len = count;
+		packet->seq ++;
 
 	//	dev_led(1,1);
 		while((clock_getTicks()-timestamp) < 100);
@@ -171,15 +198,16 @@ void HardFault_Handler(){
 	};
 	
 	
-void EIC_Handler()
+void NonMaskableInt_Handler()
 {
 	//if (PORT->Group[0].IN.reg & (1 << 22))
 	{
-		PORT->Group[LED_PORT].OUTTGL.reg = 1 <<LED0_PIN;
+	dev_led(0, 1);	
 		pah_int = true;
 		
-	//	pah8002_intr_isr();
-		EIC->INTFLAG.bit.EXTINT6 = 1;
+		
+		EIC->NMIFLAG.bit.NMI = 1;
+	dev_led(0,0);
 	}
 	
 }

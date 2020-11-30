@@ -227,16 +227,6 @@ void clock_init()
 	
 	
 	
-	// Connect GCLK_EIC to GCLK4 (1MHz)
-	GCLK_CLKCTRL_Type gclk_clkctrleic =
-	{
-		.bit.CLKEN = 1,
-		.bit.GEN = 4, //Use GCLK4
-		.bit.ID = GCLK_CLKCTRL_ID_EIC_Val, //GCLK_EIC
-		.bit.WRTLOCK = 0
-	};
-	GCLK->CLKCTRL.reg = gclk_clkctrleic.reg;
-	while(GCLK->STATUS.bit.SYNCBUSY);
 	
 	
 	

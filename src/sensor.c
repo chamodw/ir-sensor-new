@@ -66,6 +66,8 @@ const char* sensor_name()
 		const char* s =  "Kiwrious Colour Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
 		const char* s =  "Kiwrious UV Sensor";
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_HEART_RATE
+		const char* s =  "Kiwrious Heart Rate Sensor";
 #else
 		const char* s = "Kiwrious Sensor";
 #endif
