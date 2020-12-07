@@ -51,7 +51,12 @@ int main(void)
 	clock_delayMs(100);
 	
 
-
+	while(1)
+	{
+		uint16_t v;
+		ags02ma_measure(&v);
+		
+	}
 
 	uint32_t timestamp = clock_getTicks();
 	
