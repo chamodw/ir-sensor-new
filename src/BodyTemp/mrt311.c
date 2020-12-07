@@ -9,16 +9,16 @@
 #include "sam.h"
 #include "../sensor.h"
 
-
-uint64_t multi3(uint64_t x, uint64_t y)
+/*
+Returns the lower 64bits of product of two 64bit unsigned integers
+*/
+static uint64_t multi3(uint64_t x, uint64_t y)
 {
 	uint32_t a = x >> 32;
 	uint32_t b = x;
 	uint32_t p = y >> 32;
 	uint32_t q = y;
-	
 
-	
 	
 	uint64_t res = (b&0xffff)*(q&0xffff);
 	res += (uint64_t)((b >> 16)*(q>>16)) << 32;
@@ -84,7 +84,7 @@ void mrt311_setADCInput(uint8_t input)
 {
 	ADC->INPUTCTRL.reg = (0xf << ADC_INPUTCTRL_GAIN_Pos) | //0.5x gain
 	(0 << ADC_INPUTCTRL_INPUTSCAN_Pos) | //N channels scanned = INPUTSCAN+1
-	(0x18 << ADC_INPUTCTRL_MUXNEG_Pos) | //Neg input is gnd
+	(0x18 << ADC_INPUTCTRL_MUXNEG_Pos) | //Neg input is GND
 	(input << ADC_INPUTCTRL_MUXPOS_Pos);
 	while(ADC->STATUS.bit.SYNCBUSY);
 }
@@ -164,7 +164,7 @@ static int16_t irToTemp(uint16_t adc)
 	*/
 	
 	
-	uint64_t p2, p3;//*x*x*455/1e11;
+	uint64_t p2, p3;
 	p2 = multi3(x, x);
 	p3 = multi3(p2, x);
 	
