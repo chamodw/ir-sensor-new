@@ -140,12 +140,12 @@ uint16_t sensor_read(int16_t* dest)
 		//return 0;
 
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_HUMIDITY //Testing MRT311 here
-	uint16_t object, sensor;
+	int16_t object, sensor;
 	int8_t e = mrt311_read(&object, &sensor);
 
 	
-	dest[0] = object*100;
-	dest[1] =  sensor*100;
+	dest[0] = object;
+	dest[1] =  sensor;
 #else	
 	return 0; //No bytes written
 #endif

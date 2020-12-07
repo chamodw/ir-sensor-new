@@ -99,25 +99,25 @@ uint32_t mrt311_readADC()
 	return adc_res;
 }
 
-
+//Takes ADC reading as a parameter and returns NTC temperature*100 in Celcius
 static int16_t ntcToTemp(uint16_t adc)
 {
 	int32_t x = adc;
 	
-	const uint64_t x3_coeff = 233; 
-	const uint64_t x2_coeff = 24;
-	const uint64_t x_coeff = 4738;
+	const uint64_t x3_coeff = 1458; 
+	const uint64_t x2_coeff = 2405;
+	const uint64_t x_coeff = 7405;
 	
-	const uint8_t x3_shr = 36;
+	const uint8_t x3_shr = 32;
 	const uint8_t x2_shr = 20;
-	const uint8_t x_shr = 16;
+	const uint8_t x_shr = 10;
 	
 	
 	/*
 	
-	y = -3.3959e-9*x^3 + 2.2941e-5*x^2 + -7.23244e-2*x + 1.0578e2
+	y = -3.3959e-7*x^3 + 2.2941e-3*x^2 + -7.23244*x + 1.0578
 	These coefficeints have been recalculated so that the divisions can be writeen as shift rights
-	y = 233*x^3*2^-36 + 24*x^2*2^-20 + 4738*x*2^-16 + 105;
+	y = 1458*x^3*2^-32 + 2405*x^2*2^-20 + 7405*x*2^-10 + 10578;
 	*/
 	
 	
@@ -134,10 +134,10 @@ static int16_t ntcToTemp(uint16_t adc)
 	uint64_t t1 = (multi3(x, x_coeff));
 	t1 = t1 >> x_shr;
 	
-	int64_t y = 105 + t2 - t3 - t1;
+	int64_t y = 10578 + t2 - t3 - t1;
 	
 	
-	return y ;//+ 0.42;
+	return y ;
 	
 }
 
@@ -147,21 +147,20 @@ static int16_t irToTemp(uint16_t adc)
 {
 	int32_t x = adc;
 	
-	const uint64_t x3_coeff = 340; 
-	const uint64_t x2_coeff = 989;
-	const uint64_t x_coeff = 1119;
+	const uint64_t x3_coeff = 2009; 
+	const uint64_t x2_coeff = 5897;
+	const uint64_t x_coeff = 26999;
 	
-	const uint8_t x3_shr = 36;
-	const uint8_t x2_shr = 24;
-	const uint8_t x_shr = 12;
+	const uint8_t x3_shr = 32;
+	const uint8_t x2_shr = 20;
+	const uint8_t x_shr = 10;
 	
 	
 	/*
-	
-	y = 4.9531E-09x3 - 5.8993E-05x2 + 2.7332E-01x - 3.3250E+02
 
+	y = 4.6782E-07x3 - 5.6233E-03x2 + 2.6366E+01x - 3.2192E+04R² = 9.9996E-01
 	These coefficeints have been recalculated so that the divisions can be writeen as shift rights
-	y = 340*x^3*2^-36 - 989*x^2*2^-24 + 1119*x*2^-12 - 332;
+	y = 2009*x^3*2^-32 - 5897*x^2*2^-20 + 29999*x^-10 - 32192;
 	*/
 	
 	
@@ -178,26 +177,26 @@ static int16_t irToTemp(uint16_t adc)
 	uint64_t t1 = (multi3(x, x_coeff));
 	t1 = t1 >> x_shr;
 	
-	int64_t y = t3+t1-t2-332;
+	int64_t y = t3+t1-t2-32192;
 	
 	
-	return y ;//+ 0.42;
+	return y ;
 }
 
 uint16_t mrt311_read(uint16_t* object, int16_t* sensor)
 {
 	
-	uint32_t ir, ntc;
+	uint32_t ir_adc, ntc_adc;
 	
 	mrt311_setADCInput(MRT311_IR_ADC);
-	ir = mrt311_readADC() ;
+	ir_adc = mrt311_readADC() ;
 
 	mrt311_setADCInput(MRT311_NTC_ADC);
-	ntc = mrt311_readADC();
+	ntc_adc = mrt311_readADC();
 	
 
-	*object = irToTemp(ir);
-	*sensor = ntcToTemp(ntc);
+	*object = irToTemp(ir_adc);
+	*sensor = ntcToTemp(ntc_adc);
 	return K_SENSOR_OK;
 		
 }
