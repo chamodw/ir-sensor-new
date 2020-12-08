@@ -70,11 +70,19 @@ void usbserial_init()
 void usbserial_out_completion()
 {
 
-	//uint32_t len = usb_ep_out_length(USB_EP_CDC_OUT);
-	//memcpy(usbserial_buffer_in, usbserial_buffer_out, len);
 	usb_ep_start_out(USB_EP_CDC_OUT, usbserial_buffer_out_a, 64);
+
+	uint8_t packet_detected = 0;	
 	
-	//if (usbserial_buffer_out_a[0] == '0x0A')
+	for (size_t i = 0; i < BUF_SIZE-1; i++)
+	{
+		if ((usbserial_buffer_out_a[i] == 0x0A) && (usbserial_buffer_out_a[i+1] == 0x0A))
+		{
+			packet_detected = 1;
+		}
+	}
+	
+	if(packet_detected)
 	{
 		while(tx_busy);
 		hw_info.type = (K_PKT_TYPE_CMD << 8) | (KIW_SENSOR_TYPE );
