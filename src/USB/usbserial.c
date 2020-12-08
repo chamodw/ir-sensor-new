@@ -81,7 +81,8 @@ void usbserial_out_completion()
 			packet_detected = 1;
 		}
 	}
-	
+
+#if 0
 	if(packet_detected)
 	{
 		while(tx_busy);
@@ -99,6 +100,7 @@ void usbserial_out_completion()
 		usbserial_tx( (uint8_t * ) &hw_info, sizeof(Kiw_DataPacket));
 		
 	}
+#endif
 }
 
 
