@@ -200,3 +200,21 @@ uint16_t mrt311_read(uint16_t* object, int16_t* sensor)
 	return K_SENSOR_OK;
 		
 }
+
+
+//for debugging
+uint16_t mrt311_readRaw(uint16_t* ir_adc, int16_t* ntc_adc)
+{
+	
+	
+	mrt311_setADCInput(MRT311_IR_ADC);
+	*ir_adc = mrt311_readADC() ;
+
+	mrt311_setADCInput(MRT311_NTC_ADC);
+	*ntc_adc = mrt311_readADC();
+	
+
+
+	return K_SENSOR_OK;
+	
+}
