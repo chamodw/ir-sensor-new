@@ -168,9 +168,13 @@
     <PreBuildEvent>ubuntu.exe run git describe --abbrev=0 | tr -d 'v' | sed -e "s/\([0-9]*\).\([0-9]*\)/#define FW_MAJOR \1\n#define FW_MINOR \2/" &gt; ../fw_version.h </PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\src\bodyTemp.c">
+    <Compile Include="..\src\BodyTemp\mrt311.c">
       <SubType>compile</SubType>
-      <Link>bodyTemp.c</Link>
+      <Link>BodyTemp\mrt311.c</Link>
+    </Compile>
+    <Compile Include="..\src\BodyTemp\mrt311.h">
+      <SubType>compile</SubType>
+      <Link>BodyTemp\mrt311.h</Link>
     </Compile>
     <Compile Include="..\src\clock.c">
       <SubType>compile</SubType>
@@ -419,6 +423,7 @@
     <Folder Include="Device_Startup\" />
     <Folder Include="Color" />
     <Folder Include="Conductivity" />
+    <Folder Include="BodyTemp" />
     <Folder Include="Segger" />
     <Folder Include="Sensirion" />
     <Folder Include="USB" />
