@@ -28,3 +28,7 @@ unbuffer hexdump -v -e ' "" 13/2 "%4u  " "   \n"'  /dev/cu.usbmodem14501 | awk '
 ```
 unbuffer hexdump -v -e ' "" 13/2 "%4d  " "   \n"'  /dev/cu.usbmodem14501 | awk '$4 > 0 {print $4 * $5 " Ω "; } $4 < 0 {print "Resistance too high";}'
 ```
+#UV
+```
+unbuffer hexdump -v -e ' "" 3/2 "%4u  " 2/4 " %.2f " 6/2 "%d  " "   \n"'  /dev/cu.usbmodem14601 | awk '{print "Lux: "$4 "\tUVi: " $5 }'
+```
