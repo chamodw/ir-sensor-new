@@ -110,6 +110,6 @@ const char* sensor_name();
 uint16_t sensor_read(int16_t* dest);
 
 
-#define KIW_SENSOR_TYPE SENSOR_TYPE_BODY_TEMP
+#define KIW_SENSOR_TYPE SENSOR_TYPE_VOC
 
 #endif /* SENSOR_H_ */
