@@ -37,7 +37,10 @@ uint8_t sensor_init(Kiw_DataPacket* packet)
 #elif  KIW_SENSOR_TYPE == SENSOR_TYPE_HUMIDITY
 	e = humidity_init();
 #elif  KIW_SENSOR_TYPE == SENSOR_TYPE_VOC
+#if K_HW_VERSION == 2
 	e = tvoc_init();
+#endif
+
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_COLOUR
 	e = veml_init();
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
@@ -109,8 +112,13 @@ uint16_t sensor_read(int16_t* dest)
 	
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_VOC
 
-	uint16_t tvoc_ppb, co2_eq_ppm;
-	int8_t e =  tvoc_measure(&tvoc_ppb, &co2_eq_ppm);
+	uint16_t tvoc_ppb, co2_eq_ppm = 0;
+	int8_t e;
+#if K_HW_VERSION == 2
+	 e =  tvoc_measure(&tvoc_ppb, &co2_eq_ppm);
+#elif K_HW_VERSION == 3
+	e = ags02ma_measure (&tvoc_ppb);
+#endif
 	if(e == K_SENSOR_OK)
 	{
 		dest[0] = tvoc_ppb; // tVOC in ppb

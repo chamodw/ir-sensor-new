@@ -56,6 +56,19 @@
       <ToolName>J-Link</ToolName>
     </com_atmel_avrdbg_tool_samice>
     <avrtoolinterfaceclock>4000000</avrtoolinterfaceclock>
+    <custom>
+      <ToolOptions>
+        <InterfaceProperties>
+          <SwdClock>4000000</SwdClock>
+        </InterfaceProperties>
+        <InterfaceName>
+        </InterfaceName>
+      </ToolOptions>
+      <ToolType>custom</ToolType>
+      <ToolNumber>
+      </ToolNumber>
+      <ToolName>Custom Programming Tool</ToolName>
+    </custom>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -168,6 +181,14 @@
     <PreBuildEvent>ubuntu.exe run git describe --abbrev=0 | tr -d 'v' | sed -e "s/\([0-9]*\).\([0-9]*\)/#define FW_MAJOR \1\n#define FW_MINOR \2/" &gt; ../fw_version.h </PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\src\AGS02MA\ags02ma.c">
+      <SubType>compile</SubType>
+      <Link>AGS02MA\ags02ma.c</Link>
+    </Compile>
+    <Compile Include="..\src\AGS02MA\ags02ma.h">
+      <SubType>compile</SubType>
+      <Link>AGS02MA\ags02ma.h</Link>
+    </Compile>
     <Compile Include="..\src\BodyTemp\mrt311.c">
       <SubType>compile</SubType>
       <Link>BodyTemp\mrt311.c</Link>
@@ -420,6 +441,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="AGS02MA\" />
     <Folder Include="Device_Startup\" />
     <Folder Include="Color" />
     <Folder Include="Conductivity" />
@@ -431,6 +453,9 @@
     <Folder Include="UV\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AGS02MA\desktop.ini">
+      <SubType>compile</SubType>
+    </None>
     <None Include="Device_Startup\samd11d14am_flash.ld">
       <SubType>compile</SubType>
     </None>
