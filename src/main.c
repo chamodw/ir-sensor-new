@@ -80,20 +80,21 @@ int main(void)
 	//HRM Sensor is special, it needs more than one packet
 #if KIW_SENSOR_TYPE == SENSOR_TYPE_HEART_RATE
 		ppg_read(packets);
-		for (size_t i = 0; i < 10; i+=2)
+		for (size_t i = 0; i < 5; i++)
 		{
 			
 			
 			
 			packets[i].seq = seq;
-			packets[i+1].seq = seq+1;
-			if (seq < (INT16_MAX -2))
-				seq += 2;
-			else
-				seq = 0;
-			
-			usbserial_tx(packets, sizeof(Kiw_DataPacket)*2);
-			
+			//packets[i+1].seq = seq+1;
+			if (seq < (INT16_MAX -1))
+				seq += 1;
+			//else
+				//seq = 0;
+		
+				usbserial_tx(&packets[i], sizeof(Kiw_DataPacket));
+		
+				
 			clock_delayMs(5);
 		}
 		continue;
