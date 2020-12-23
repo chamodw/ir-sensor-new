@@ -32,3 +32,8 @@ unbuffer hexdump -v -e ' "" 13/2 "%4d  " "   \n"'  /dev/cu.usbmodem14501 | awk '
 ```
 unbuffer hexdump -v -e ' "" 3/2 "%4u  " 2/4 " %.2f " 6/2 "%d  " "   \n"'  /dev/cu.usbmodem14601 | awk '{print "Lux: "$4 "\tUVi: " $5 }'
 ```
+
+### HeartRate (to be verified - ask Chamod)
+```
+unbuffer hexdump -v -e ' "" 3/2 "%4u  " 4/4 " %u " 2/2 "%d  " "   \n"'  /dev/cu.usbmodem14601 | awk '{print "v1: "$4 "\tv2: " $5 "\tv3: " $6 "\tv4: " $7 }'
+```
