@@ -62,7 +62,7 @@ const char* sensor_name()
 {
 	
 #if KIW_SENSOR_TYPE == SENSOR_TYPE_CONDUCTIVTIY
-		const char* s =  "Kiwrious Conductivity Sensor";
+		const char* s =  "Kiwrious Conductance Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_HUMIDITY
 		const char* s =  "Kiwrious Humidity Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_VOC
