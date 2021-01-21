@@ -73,7 +73,9 @@ typedef  struct
 		UV				= (float) (data[2] + (data[3] << 8))
 		
 		
-	
+	Temperature
+		Object Temperature (C) = (signed short) data[0]/100
+		Sensor Temperature (C)	= (signed short) data[1]/100
 
 
 
