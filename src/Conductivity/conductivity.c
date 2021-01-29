@@ -229,19 +229,19 @@ int16_t cdt_readAuto(int16_t* value, int16_t* range, int16_t* debug_buffer)
 	
 	const float adc_max = (4096/3.3*(3.3-diode_compensation)); //TODO: different values for didfferent ranges
 	
-	if (adc_values[0] > 4000)
+	if (adc_values[0] >= adc_max)
 	{
 		*value = -1; //Resistance too high
 		range = 0;
 	}
-	else if (adc_values[0] < 4000 && adc_values[1] > 3000) //Use the 100k range for measurement
+	else if (adc_values[0] < adc_max && adc_values[1] > 3000) //Use the 100k range for measurement (adc_values[0])
 	{
 		float a = (float)adc_values[0];
 		float out = a*1000/(adc_max - a);
 		*value = (int16_t) out;
 		*range = 100;
 	}
-	else if (adc_values[1] <= 3000 && adc_values[2] > 3000) //Use the 10k range
+	else if (adc_values[1] <= 3000 && adc_values[2] > 3000) //Use the 10k range (adc_values[1])
 	{
 		float a = (float)adc_values[1];
 		float out = a*1000/(adc_max - a);
