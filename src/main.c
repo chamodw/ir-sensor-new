@@ -90,7 +90,7 @@ int main(void)
 			
 			
 			packets[i].seq = seq;
-			//packets[i+1].seq = seq+1;
+		
 			if (seq < (INT16_MAX -1))
 				seq += 1;
 			else
@@ -102,8 +102,8 @@ int main(void)
 			clock_delayMs(5);
 		}
 			
-		continue;
-#endif
+		
+#else //For sensors other than HRM, only one packet is sent at a time
 	
 		
 		uint16_t count = sensor_read(packet->data);
@@ -115,7 +115,7 @@ int main(void)
 		timestamp = clock_getTicks();
 
 		usbserial_tx((uint8_t*)&packet, sizeof(packet));
-		
+#endif		
 		
 	}
 	
