@@ -114,7 +114,7 @@ int main(void)
 		while((clock_getTicks()-timestamp) < 100);
 		timestamp = clock_getTicks();
 
-		usbserial_tx((uint8_t*)&packet, sizeof(packet));
+		usbserial_tx((uint8_t*)packet, sizeof(Kiw_DataPacket));
 #endif		
 		
 	}
