@@ -45,8 +45,8 @@ typedef  struct
 	int16_t header; //Packet header constant  0x0A0A
 	int16_t type; //Indicates packet type
 	int16_t len;	//Number of data bytes used in this packet
-	int16_t data[8]; //Actual data, represented in int16 type
-	int16_t seq;	//Sequence number, to identify duplicate packets/dropped packets
+	int16_t data[8]; //Actual data, represented encoded in the following format
+	int16_t seq;	//Sequence number, to identify duplicate packets/dropped packets (0-32767)
 	int16_t footer;	//Packet footer constant 0x0B0B
 } __attribute__((packed)) Kiw_DataPacket;
 
@@ -73,9 +73,7 @@ typedef  struct
 		UV				= (float) (data[2] + (data[3] << 8))
 		
 		
-	Temperature
-		Object Temperature (C) = (signed short) data[0]/100
-		Sensor Temperature (C)	= (signed short) data[1]/100
+	
 
 
 
@@ -112,6 +110,6 @@ const char* sensor_name();
 uint16_t sensor_read(int16_t* dest);
 
 
-#define KIW_SENSOR_TYPE SENSOR_TYPE_VOC
+#define KIW_SENSOR_TYPE SENSOR_TYPE_HEART_RATE
 
 #endif /* SENSOR_H_ */

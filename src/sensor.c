@@ -47,8 +47,9 @@ uint8_t sensor_init(Kiw_DataPacket* packet)
 	e = Si1133_init();
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
 	e = mrt311_init();
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_HEART_RATE
+	e = ppg_init();
 #endif
-
 
 	return e;
 	
@@ -73,6 +74,8 @@ const char* sensor_name()
 		const char* s =  "Kiwrious UV Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
 		const char* s =  "Kiwrious Temperature Sensor";
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_HEART_RATE
+		const char* s =  "Kiwrious Heart Rate Sensor";
 #else
 		const char* s = "Kiwrious Sensor";
 #endif
@@ -153,6 +156,7 @@ uint16_t sensor_read(int16_t* dest)
 	
 	dest[0] = (uint16_t)object;
 	dest[1] = (uint16_t) sensor;
+	
 #else	
 	return 0; //No bytes written
 #endif

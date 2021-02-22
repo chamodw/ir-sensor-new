@@ -184,7 +184,7 @@ void clock_init()
 		.bit.DIVSEL = 0,
 		.bit.GENEN = 1,
 		.bit.ID = 4,
-		.bit.OE = 0,
+		.bit.OE = 1,
 		.bit.OOV = 0,
 		.bit.IDC = 1,
 		.bit.RUNSTDBY = 0,
@@ -224,6 +224,12 @@ void clock_init()
 	GCLK->CLKCTRL.reg = gclk_clkctrladc.reg;
 	while(GCLK->STATUS.bit.SYNCBUSY);
 	
+	
+	
+	
+	
+	
+	
 	//Set CPU, APBx buses to 48MHz
 	PM->CPUSEL.reg = PM_CPUSEL_CPUDIV_DIV1;
 	PM->APBASEL.reg = PM_APBASEL_APBADIV_DIV1_Val;
@@ -259,3 +265,4 @@ void clock_delayMs(uint32_t delay_ms)
 	uint32_t t = clock_getTicks();
 	while((clock_getTicks()-t) < delay_ms);
 }
+
