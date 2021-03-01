@@ -21,7 +21,7 @@ Kiw_DataPacket* g_packet;
 #error "Sensor type not defined"
 #endif
 
-uint8_t sensor_init(Kiw_DataPacket* packet)
+uint8_t sensor_initPacket(Kiw_DataPacket* packet)
 {
 	g_packet = packet;
 	g_packet->type = (K_PKT_TYPE_DATA << 8) | (KIW_SENSOR_TYPE );
@@ -29,7 +29,11 @@ uint8_t sensor_init(Kiw_DataPacket* packet)
 	g_packet->footer = 0x0B0B;
 	g_packet->seq = 0;
 	
-	
+	return K_SENSOR_OK;
+}
+
+uint8_t sensor_init()
+{
 	uint8_t e = K_SENSOR_STATUS_UNKNOWN;
 	
 #if KIW_SENSOR_TYPE == SENSOR_TYPE_CONDUCTIVTIY

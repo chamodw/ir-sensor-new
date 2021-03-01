@@ -58,22 +58,25 @@ int main(void)
 	
 	Kiw_DataPacket* packet = &packets[0];
 
-	sensor_init(packet);
 
+	sensor_initPacket(packet);
+	sensor_init();
+	
+	clock_delayMs(100);
+	
+	
+	//HRM Sensor is special, it needs more than one packet
 #if KIW_SENSOR_TYPE == SENSOR_TYPE_HEART_RATE
-	for (size_t i = 0; i < 10; i++)	
+	for (size_t i = 1; i < 10; i++)	
 	{
-		sensor_init(&packets[i]);
+		sensor_initPacket(&packets[i]);
 		packets[i].len = 8;
 	}
-
 	int16_t seq = 0;
-
 #endif
 		
 
 	uint32_t timestamp = clock_getTicks();
-	
 	while (1)
 	{
 		
@@ -81,14 +84,8 @@ int main(void)
 #if KIW_SENSOR_TYPE == SENSOR_TYPE_HEART_RATE
 		
 		ppg_read(packets);
-		
-		
-		
 		for (size_t i = 0; i < 5; i++)
 		{
-			
-			
-			
 			packets[i].seq = seq;
 		
 			if (seq < (INT16_MAX -1))
@@ -96,9 +93,7 @@ int main(void)
 			else
 				seq = 0;
 		
-			usbserial_tx(&packets[i], sizeof(Kiw_DataPacket));
-		
-				
+			usbserial_tx(&packets[i], sizeof(Kiw_DataPacket));		
 			clock_delayMs(5);
 		}
 			
