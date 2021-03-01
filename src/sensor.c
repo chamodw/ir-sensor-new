@@ -41,8 +41,10 @@ uint8_t sensor_init()
 #elif  KIW_SENSOR_TYPE == SENSOR_TYPE_HUMIDITY
 	e = humidity_init();
 #elif  KIW_SENSOR_TYPE == SENSOR_TYPE_VOC
-#if K_HW_VERSION == 2
+#if K_VOC_TYPE == 0
 	e = tvoc_init();
+#else
+	//e = ags02ma_init();
 #endif
 
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_COLOUR
@@ -121,9 +123,9 @@ uint16_t sensor_read(int16_t* dest)
 
 	uint16_t tvoc_ppb, co2_eq_ppm = 0;
 	int8_t e;
-#if K_HW_VERSION == 2
+#if K_VOC_TYPE == 0
 	 e =  tvoc_measure(&tvoc_ppb, &co2_eq_ppm);
-#elif K_HW_VERSION == 3
+#elif K_VOC_TYPE == 1
 	e = ags02ma_measure (&tvoc_ppb);
 #endif
 	if(e == K_SENSOR_OK)
