@@ -17,6 +17,11 @@
 #error "Hardware version not defined"
 #endif
 
+
+#define K_VOC_TYPE	0  /* 0 = Sensirion, 1 = AGS02MA */
+
+
+
 //Set LED Status
 void dev_led(uint8_t led, uint8_t status);
 

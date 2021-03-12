@@ -105,7 +105,7 @@ void i2c_init()
 								;
 								
 		
-	SERCOMX->I2CM.BAUD.reg = 8 << SERCOM_I2CM_BAUD_BAUD_Pos;
+	SERCOMX->I2CM.BAUD.reg = 32 << SERCOM_I2CM_BAUD_BAUD_Pos;
 	SERCOMX->I2CM.CTRLA.bit.ENABLE = 1;
 	while(SERCOMX->I2CM.SYNCBUSY.bit.ENABLE);
 	

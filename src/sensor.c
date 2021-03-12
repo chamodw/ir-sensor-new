@@ -21,7 +21,7 @@ Kiw_DataPacket* g_packet;
 #error "Sensor type not defined"
 #endif
 
-uint8_t sensor_init(Kiw_DataPacket* packet)
+uint8_t sensor_initPacket(Kiw_DataPacket* packet)
 {
 	g_packet = packet;
 	g_packet->type = (K_PKT_TYPE_DATA << 8) | (KIW_SENSOR_TYPE );
@@ -29,24 +29,33 @@ uint8_t sensor_init(Kiw_DataPacket* packet)
 	g_packet->footer = 0x0B0B;
 	g_packet->seq = 0;
 	
-	
+	return K_SENSOR_OK;
+}
+
+uint8_t sensor_init()
+{
 	uint8_t e = K_SENSOR_STATUS_UNKNOWN;
 	
 #if KIW_SENSOR_TYPE == SENSOR_TYPE_CONDUCTIVTIY
 	e = cdt_init();
 #elif  KIW_SENSOR_TYPE == SENSOR_TYPE_HUMIDITY
-	e = mrt311_init();
-	//e = humidity_init();
+	e = humidity_init();
 #elif  KIW_SENSOR_TYPE == SENSOR_TYPE_VOC
+#if K_VOC_TYPE == 0
 	e = tvoc_init();
+#else
+	//e = ags02ma_init();
+#endif
+
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_COLOUR
 	e = veml_init();
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
 	e = Si1133_init();
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
 	e = mrt311_init();
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_HEART_RATE
+	e = ppg_init();
 #endif
-
 
 	return e;
 	
@@ -60,7 +69,7 @@ const char* sensor_name()
 {
 	
 #if KIW_SENSOR_TYPE == SENSOR_TYPE_CONDUCTIVTIY
-		const char* s =  "Kiwrious Conductivity Sensor";
+		const char* s =  "Kiwrious Conductance Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_HUMIDITY
 		const char* s =  "Kiwrious Humidity Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_VOC
@@ -71,6 +80,8 @@ const char* sensor_name()
 		const char* s =  "Kiwrious UV Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
 		const char* s =  "Kiwrious Temperature Sensor";
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_HEART_RATE
+		const char* s =  "Kiwrious Heart Rate Sensor";
 #else
 		const char* s = "Kiwrious Sensor";
 #endif
@@ -95,23 +106,28 @@ uint16_t sensor_read(int16_t* dest)
 	}
 	return 0;
 	
-//#elif KIW_SENSOR_TYPE == SENSOR_TYPE_HUMIDITY
-	//
-	//int32_t h=0, t=0;
-	//int8_t e = humidity_measure(&t, &h); //returns tmp*1000 and humidity*1000
-	//if(e == K_SENSOR_OK)
-	//{
-		//dest[0] = t/10; //Temperature in C *100
-		//dest[1] = h/10; // RH % *100
-		//return 2;
-	//}
-	//return 0;
-	//
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_HUMIDITY
+	
+	int32_t h=0, t=0;
+	int8_t e = humidity_measure(&t, &h); //returns tmp*1000 and humidity*1000
+	if(e == K_SENSOR_OK)
+	{
+		dest[0] = t/10; //Temperature in C *100
+		dest[1] = h/10; // RH % *100
+		return 2;
+	}
+	return 0;
+	
 	
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_VOC
 
-	uint16_t tvoc_ppb, co2_eq_ppm;
-	int8_t e =  tvoc_measure(&tvoc_ppb, &co2_eq_ppm);
+	uint16_t tvoc_ppb, co2_eq_ppm = 0;
+	int8_t e;
+#if K_VOC_TYPE == 0
+	 e =  tvoc_measure(&tvoc_ppb, &co2_eq_ppm);
+#elif K_VOC_TYPE == 1
+	e = ags02ma_measure (&tvoc_ppb);
+#endif
 	if(e == K_SENSOR_OK)
 	{
 		dest[0] = tvoc_ppb; // tVOC in ppb
@@ -139,13 +155,14 @@ uint16_t sensor_read(int16_t* dest)
 	//else
 		//return 0;
 
-#elif KIW_SENSOR_TYPE == SENSOR_TYPE_HUMIDITY //Testing MRT311 here
-	int16_t object, sensor;
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
+	uint16_t object, sensor;
 	int8_t e = mrt311_read(&object, &sensor);
 
 	
-	dest[0] = object;
-	dest[1] =  sensor;
+	dest[0] = (uint16_t)object;
+	dest[1] = (uint16_t) sensor;
+	
 #else	
 	return 0; //No bytes written
 #endif
