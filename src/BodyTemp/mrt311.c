@@ -52,7 +52,7 @@ void mrt311_init()
 	ADC->REFCTRL.bit.REFSEL = 0x02; //REF = VDDANA*0.5
 	
 	ADC->AVGCTRL.bit.SAMPLENUM = 4; //add 16 samples
-	ADC->AVGCTRL.bit.ADJRES = 4; //Shift right by 4
+	ADC->AVGCTRL.bit.ADJRES = 2; //Shift right by 2
 	
 	ADC->SAMPCTRL.bit.SAMPLEN = 32; //32 * CLK_ADC/2 sample time
 	
@@ -183,7 +183,7 @@ static int16_t irToTemp(uint16_t adc)
 	return y ;
 }
 
-uint16_t mrt311_read(uint16_t* object, int16_t* sensor)
+uint16_t mrt311_read(uint16_t* object, int16_t* sensor, int16_t* object_raw, int16_t* sensor_raw)
 {
 	
 	uint32_t ir_adc, ntc_adc;
@@ -195,8 +195,12 @@ uint16_t mrt311_read(uint16_t* object, int16_t* sensor)
 	ntc_adc = mrt311_readADC();
 	
 
-	*object = irToTemp(ir_adc);
-	*sensor = ntcToTemp(ntc_adc);
+	*object = irToTemp(ir_adc / 4); //read_ADC function performs oversampling by 2 bits, drop these 2 bits before processing.
+	*sensor = ntcToTemp(ntc_adc / 4);
+	
+	*object_raw = ir_adc;
+	*sensor_raw = ntc_adc;
+	
 	return K_SENSOR_OK;
 		
 }

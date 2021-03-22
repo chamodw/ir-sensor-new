@@ -1,7 +1,7 @@
 #ifndef MRT311_H
 #define MRT311_H
 
-
+#include "sam.h"
 
 #if K_HW_VERSION == 3
 
@@ -11,6 +11,7 @@
 #endif
 
 
+uint16_t mrt311_read(uint16_t* object, int16_t* sensor, int16_t* object_raw, int16_t* sensor_raw);
 
 
 
