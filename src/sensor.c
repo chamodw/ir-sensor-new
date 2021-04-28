@@ -156,14 +156,34 @@ uint16_t sensor_read(int16_t* dest)
 		//return 0;
 
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
-	int16_t object, sensor, object_raw, sensor_raw;
-	int8_t e = mrt311_read(&object, &sensor, &object_raw, &sensor_raw);
+
+	const uint8_t mode = 2;
+	if (mode == 1)
+	{
+		int16_t object, sensor, object_raw, sensor_raw;
+		int8_t e = mrt311_read(&object, &sensor, &object_raw, &sensor_raw);
 
 	
-	dest[0] = (int16_t)object;
-	dest[1] = (int16_t) sensor;
-	dest[2] = object_raw;
-	dest[3] = sensor_raw;
+		dest[0] = (int16_t)object;
+		dest[1] = (int16_t) sensor;
+		dest[2] = object_raw;
+		dest[3] = sensor_raw;
+	}
+	else if (mode == 2)
+	{
+		int16_t object, sensor, object_raw, sensor_raw;
+		int8_t e = mrt311_read(&object, &sensor, &object_raw, &sensor_raw);
+		
+	//	float constants[3] = {0.2583, -1.1905555544654325, -1300.694};	//Sensor ID 3
+		float constants[3] = {0.1476, -6.766882030112777e-01, -718.4069};	//Sensor ID 7
+			
+			
+		dest[0] = (int16_t)sensor;
+		dest[1] = (int16_t) object_raw;
+		
+		memcpy((void*)&dest[2], (void*)constants, sizeof(constants));
+		
+	}
 #else	
 	return 0; //No bytes written
 #endif
