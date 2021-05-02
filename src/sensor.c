@@ -13,6 +13,7 @@
 #include "UV/si1133.h"
 
 #include <string.h>
+#include "ir_constants.h"
 
 Kiw_DataPacket* g_packet;
 
@@ -53,6 +54,8 @@ uint8_t sensor_init()
 	e = Si1133_init();
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
 	e = mrt311_init();
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_TEMP_CALIB
+	e = mrt311_init();
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_HEART_RATE
 	e = ppg_init();
 #endif
@@ -79,6 +82,8 @@ const char* sensor_name()
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_UV_LIGHT
 		const char* s =  "Kiwrious UV Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
+		const char* s =  "Kiwrious Temperature Sensor";
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_TEMP_CALIB
 		const char* s =  "Kiwrious Temperature Sensor";
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_HEART_RATE
 		const char* s =  "Kiwrious Heart Rate Sensor";
@@ -157,33 +162,30 @@ uint16_t sensor_read(int16_t* dest)
 
 #elif KIW_SENSOR_TYPE == SENSOR_TYPE_BODY_TEMP
 
-	const uint8_t mode = 2;
-	if (mode == 1)
-	{
-		int16_t object, sensor, object_raw, sensor_raw;
-		int8_t e = mrt311_read(&object, &sensor, &object_raw, &sensor_raw);
+	int16_t object, sensor, object_raw, sensor_raw;
+	int8_t e = mrt311_read(&object, &sensor, &object_raw, &sensor_raw);
 
-	
-		dest[0] = (int16_t)object;
-		dest[1] = (int16_t) sensor;
-		dest[2] = object_raw;
-		dest[3] = sensor_raw;
-	}
-	else if (mode == 2)
-	{
+
+	dest[0] = (int16_t)object;
+	dest[1] = (int16_t) sensor;
+	dest[2] = object_raw;
+	dest[3] = sensor_raw;
+	return 8;
+#elif KIW_SENSOR_TYPE == SENSOR_TYPE_TEMP_CALIB
 		int16_t object, sensor, object_raw, sensor_raw;
 		int8_t e = mrt311_read(&object, &sensor, &object_raw, &sensor_raw);
 		
-	//	float constants[3] = {0.2583, -1.1905555544654325, -1300.694};	//Sensor ID 3
-		float constants[3] = {0.1476, -6.766882030112777e-01, -718.4069};	//Sensor ID 7
-			
+		float constants[3] = {
+			IR_CALIB_A,
+			IR_CALIB_B,
+			IR_CALIB_C };
 			
 		dest[0] = (int16_t)sensor;
 		dest[1] = (int16_t) object_raw;
 		
 		memcpy((void*)&dest[2], (void*)constants, sizeof(constants));
 		
-	}
+	return 8;
 #else	
 	return 0; //No bytes written
 #endif

@@ -222,3 +222,4 @@ uint16_t mrt311_readRaw(uint16_t* ir_adc, int16_t* ntc_adc)
 	return K_SENSOR_OK;
 	
 }
+

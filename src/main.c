@@ -15,7 +15,7 @@
 #include "USB/usb_lib.h"
 #include "USB/usbserial.h"
 #include "clock.h"
-#include "C:\Users\csam754\Documents\Projects\Kiwrious\Firmware\Kiwrious-Sensor\src\PPG\sns_dd_pah_driver.h"
+#include "PPG/sns_dd_pah_driver.h"
 #include <stdbool.h>
 
 

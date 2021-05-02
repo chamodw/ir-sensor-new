@@ -27,6 +27,7 @@ Definitions
 #define SENSOR_TYPE_VOC 			6	//  VOC 
 #define SENSOR_TYPE_HUMIDITY		7 
 #define SENSOR_TYPE_SOUND			8
+#define SENSOR_TYPE_TEMP_CALIB		9
 
 
 //Error codes
@@ -110,6 +111,6 @@ const char* sensor_name();
 uint16_t sensor_read(int16_t* dest);
 
 
-#define KIW_SENSOR_TYPE SENSOR_TYPE_BODY_TEMP
+#define KIW_SENSOR_TYPE SENSOR_TYPE_TEMP_CALIB
 
 #endif /* SENSOR_H_ */
