@@ -1,0 +1,8 @@
+// Auto generated file 
+ #ifndef IR_CONSTANTS
+ #define IR_CONSTANTS
+
+#define IR_CALIB_A -0.998992469133671
+#define IR_CALIB_B 0.20160188869345044
+#define IR_CALIB_C -954.2027146979797
+#endif
